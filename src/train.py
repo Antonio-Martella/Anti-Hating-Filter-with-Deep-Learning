@@ -73,5 +73,4 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger])
 
-os.makedirs('models', exist_ok=True) 
-model_hate_binary.save('models/hate_filter_model.h5')
+model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/hate_filter_model.h5')
