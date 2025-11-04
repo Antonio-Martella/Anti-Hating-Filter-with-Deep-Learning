@@ -28,8 +28,8 @@ from tensorflow.keras.models import load_model, Sequential
 
 
 # FROM MY FILES
-from src.data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom
-from src.model import binary_hate_model, callback_binary_hate, class_weights_hate
+from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom
+from model import binary_hate_model, callback_binary_hate, class_weights_hate
 
 
 # PREPROCESSING TESTO
