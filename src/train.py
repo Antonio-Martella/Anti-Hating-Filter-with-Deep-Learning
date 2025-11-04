@@ -63,7 +63,7 @@ model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                                  tf.keras.metrics.Recall(name = 'recall')])
 #model_hate_binary.summary()
 
-csv_logger = CSVLoggerCustom('../results/training_log_model_hate_or_not.csv', verbose = True)
+csv_logger = CSVLoggerCustom('results/training_log_model_hate_or_not.csv', verbose = True)
 
 history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
