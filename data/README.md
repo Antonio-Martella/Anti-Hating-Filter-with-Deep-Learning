@@ -10,18 +10,18 @@ In questa cartella è presente il file:
 Ogni riga del file rappresenta un esempio con le seguenti colonne principali:
 ## 🧾 Descrizione del dataset
 Ogni riga del file rappresenta un esempio, con le seguenti colonne principali:
-```
-| Colonna | Descrizione |
-|----------|-------------|
-| `comment_text` | Contenuto testuale del commento o frase |
-| `toxic` | Etichetta binaria per contenuti tossici |
-| `severe_toxic` | Etichetta per contenuti altamente tossici |
-| `obscene` | Etichetta per linguaggio osceno |
-| `threat` | Etichetta per minacce |
-| `insult` | Etichetta per insulti |
+
+|     Colonna     | Descrizione |
+|-----------------|-------------|
+|   `comment_text`| Contenuto testuale del commento o frase |
+|          `toxic`| Etichetta binaria per contenuti tossici |
+|   `severe_toxic`| Etichetta per contenuti altamente tossici |
+| `obscene`       | Etichetta per linguaggio osceno |
+| `threat`        | Etichetta per minacce |
+| `insult`        | Etichetta per insulti |
 | `identity_hate` | Etichetta per odio verso identità specifiche |
 | `sum_injurious` | Somma p delle etichette precedenti |
-```
+
 
 ## Origine
 Il dataset è scaricabile dal mio drive personale
