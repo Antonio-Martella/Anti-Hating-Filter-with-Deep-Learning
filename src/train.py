@@ -1,10 +1,17 @@
+import os, sys
+stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w') 
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import warnings
 warnings.filterwarnings("ignore")
-import os
-os.environ['TE_CPP_MIN_LOG_LEVEL'] = '3'
-os.environ['TE_CPP_MIN_LOG_LEVEL'] = '2'
+
 import tensorflow as tf
-tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
+sys.stderr = stderr  
+
+import absl.logging
+absl.logging.set_verbosity(absl.logging.ERROR)
 
 import pandas as pd
 import numpy as np
@@ -30,6 +37,7 @@ from tensorflow.keras.models import load_model, Sequential
 # FROM MY FILES
 from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom
 from model import binary_hate_model, callback_binary_hate, class_weights_hate
+from evaluate import evaluate_model
 
 
 # PREPROCESSING TESTO
@@ -65,7 +73,7 @@ model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
 
 csv_logger = CSVLoggerCustom('results/training_log_model_hate_or_not.csv', verbose = True)
 
-history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
+'''history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
@@ -73,4 +81,12 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger])
 
-model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/hate_filter_model.h5')
+model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/hate_filter_model.h5')'''
+
+try:
+  model_hate_binary = tf.keras.models.load_model('/content/drive/MyDrive/Colab Notebooks/Deep Learning/model_hating_or_not.h5')
+  print("Modello 'model_hate_binary.h5' caricato con successo.")
+except Exception as e:
+  print(f"Errore nel caricamento del modello binario: {e}")
+
+evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, fold = 'binary_hate')
