@@ -10,8 +10,11 @@ La struttura del repository è organizzata per separare in modo chiaro i diversi
 
 Progetto_DL/
 ├── notebooks/ # Contiene i notebook Jupyter (.ipynb) con EDA, training e test
+
 │ ├── Progetto_DL.ipynb # Notebook principale: analisi, preprocessing, training, validazione e inferenza
+
 │ └── demo_inference.ipynb # (Facoltativo) notebook demo con poche predizioni pronte da mostrare
+
 │
 ├── src/ # Moduli Python che contengono il codice eseguibile
 │ ├── data_utils.py # Funzioni per il caricamento e preprocessing del dataset
