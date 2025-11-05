@@ -40,29 +40,33 @@ from model import binary_hate_model, callback_binary_hate, class_weights_hate
 from evaluate import evaluation_class, evaluate_model
 
 
-# PREPROCESSING TESTO
+# PREPROCESSING CORPUS
 df = load_dataset()
 df = preprocess_text(df)
 
-# FIRST MODEL, BINARY CLASSIFICATION, HATING OR NOT HATING
+
+# -------------------------------------------------------------------
+# ----- FIRST MODEL, BINARY CLASSIFICATION, HATING OR NOT HATING -----
 df['has_hate'] = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']].any(axis = 1).astype(int)
 x = df.comment_text.values
 y_hate = df.loc[:, 'has_hate']
 
+# EVALUTATE CLASS DISTRIBUTIONS
 class_counts = class_counts = pd.Series(y_hate).value_counts().sort_index()
 evaluation_class(count = class_counts, folder = 'binary_hate')
 
-
+# SPLIT DATASET
 x_train_hate, x_test_hate, y_train_hate, y_test_hate = train_test_split(x, y_hate, test_size = 0.2, 
                                                                         random_state = 1, 
                                                                         stratify = y_hate, 
                                                                         shuffle = True)
 
-
+# TOKENIATION AND PUDDING
 padded_train_hate_sequences, padded_test_hate_sequences, \
     max_len_hate, vocabulary_hate_size, _ = tokenization_and_pudding(x_train = x_train_hate,
                                                                   x_test = x_test_hate)
 
+# INSTANTIATE THE MODEL AND HYPERPARAMETERS
 clear_session()
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
@@ -73,10 +77,11 @@ model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
                                                  tf.keras.metrics.Precision(name = 'precision'),
                                                  tf.keras.metrics.Recall(name = 'recall')])
-#model_hate_binary.summary()
 
+# LOG FILE .csv
 csv_logger = CSVLoggerCustom('results/training_log_model_hate_or_not.csv', verbose = True)
 
+# FIT THE MODEL
 '''history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
@@ -85,23 +90,27 @@ csv_logger = CSVLoggerCustom('results/training_log_model_hate_or_not.csv', verbo
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger])'''
 
+# COPY WEIGHTS TO /models (to be added)
 #model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/hate_filter_model.h5')
 #model_hate_binary.save('/model/hate_filter_model.h5')
 
+###
 try:
   model_hate_binary = tf.keras.models.load_model('/content/drive/MyDrive/Colab Notebooks/Deep Learning/model_hating_or_not.h5')
   print("Modello 'model_hate_binary.h5' caricato con successo.")
 except Exception as e:
   print(f"Errore nel caricamento del modello binario: {e}")
 
-evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, fold = 'binary_hate')
+# EVALUATE THE MODEL AND SAVE IN /result
+evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, folder = 'binary_hate')
 
+
+# ----------------------------------------------------------
 # --- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE ---
 df_hate_type = df[df["has_hate"] == 1]
-
 x_hate_type = df_hate_type.comment_text.values
 y_hate_type = df_hate_type.loc[:, 'toxic':'identity_hate']
 
+# EVALUTATE CLASS DISTRIBUTIONS
 class_counts = y_hate_type.sum().sort_values(ascending=False)
-
 evaluation_class(count = class_counts, folder = 'type_hate')

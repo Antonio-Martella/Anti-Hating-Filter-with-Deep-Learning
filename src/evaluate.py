@@ -1,21 +1,35 @@
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import pandas as pd
 import numpy as np
-from sklearn.metrics import classification_report, confusion_matrix
 import seaborn as sns
 import matplotlib.pyplot as plt
-from tensorflow.keras.models import load_model
-from data_utils import load_dataset, preprocess_text, tokenization_and_pudding
+
+from sklearn.metrics import classification_report, confusion_matrix
 
 
 def evaluation_class(count, folder = None):
+  '''
+  Generates and saves a bar chart with the class distribution.
+
+  Parameters
+  ----------
+  count : pandas.Series
+  Series containing the count of each class or category.
+  folder : str, optional
+  Subfolder of `results/` in which to save the chart (e.g., 'binary_hate').
+
+  Output
+  -------
+  results/{folder}/distribution_class.png : image of the bar chart
+  '''
+
   os.makedirs(f"results/{folder}", exist_ok=True)
   
   plt.figure(figsize=(6, 4))
   count.plot(kind='bar', color=sns.color_palette('viridis', len(count)))
-  plt.title('Distribution of Hating Categories')
-  plt.xlabel('Hating Category')
+  plt.title('Distribution of class')
+  if folder == 'binary_hate':
+    plt.xlabel('Hating (1) or not (0)')
   plt.ylabel('Count')
   plt.xticks(rotation=45, ha='right')
   plt.tight_layout()
@@ -26,24 +40,40 @@ def evaluation_class(count, folder = None):
 # ---------------------------------------------------------------
 
 
-def evaluate_model(model, X_test, y_test, fold = None):
-  print("Predizioni in corso...")
-  y_pred = (model.predict(X_test) > 0.5).astype(int)
+def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
+  '''
+  Evaluates the model on the test set and saves the results in `results/{folder}`.
 
-  print("Calcolo metriche...")
+  Parameters
+  ----------
+  model : keras.Model
+  Trained model to evaluate.
+  X_test, y_test : array-like
+  Test data and labels.
+  threshold : float
+  folder : str
+  Subfolder to save reports and graphs (e.g., 'binary_hate').
+
+  Output
+  -------
+  - metrics_report.csv : precision, recall, f1, support metrics
+  - confusion_matrix.png : confusion matrix saved as an image
+  ''' 
+  y_pred = (model.predict(X_test) >= threshold).astype(int)
+
   report = classification_report(y_test, y_pred, output_dict=True)
   report_df = pd.DataFrame(report).transpose()
-  os.makedirs(f"results/{fold}", exist_ok=True)
-  report_df.to_csv(f'results/{fold}/metrics_report.csv', index=True)
+  os.makedirs(f"results/{folder}", exist_ok=True)
+  report_df.to_csv(f'results/{folder}/metrics_report.csv', index=True)
 
-  print("Generazione matrice di confusione...")
   cm = confusion_matrix(y_test, y_pred)
   plt.figure(figsize=(5, 4))
-  sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["No Hate", "Hate"], yticklabels=["No Hate", "Hate"])
-  plt.xlabel("Predetto")
-  plt.ylabel("Reale")
+  if folder == 'binary_hate':
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["No Hate", "Hate"], yticklabels=["No Hate", "Hate"])
+  elif folder == '':
+    _
+  plt.xlabel("Predict")
+  plt.ylabel("Real")
   plt.title("Confusion Matrix")
-  plt.savefig(f"results/{fold}/confusion_matrix.png")
+  plt.savefig(f"results/{folder}/confusion_matrix.png")
   plt.close()
-
-  print("Valutazione completata. Risultati salvati in 'results/'.")
