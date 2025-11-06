@@ -64,7 +64,7 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   report = classification_report(y_test, y_pred, output_dict=True)
   report_df = pd.DataFrame(report).transpose()
   os.makedirs(f"results/{folder}", exist_ok=True)
-  report_df.to_csv(f'results/{folder}/metrics_report.csv', index=True)
+  report_df.to_csv(f'results/{folder}/metrics_report_on_test.csv', index=True)
 
   cm = confusion_matrix(y_test, y_pred)
   plt.figure(figsize=(5, 4))

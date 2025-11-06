@@ -79,24 +79,24 @@ model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                                  tf.keras.metrics.Recall(name = 'recall')])
 
 # LOG FILE .csv
-csv_logger = CSVLoggerCustom('results/training_log_model_hate_or_not.csv', verbose = True)
+csv_logger_binary_hate = CSVLoggerCustom('results/binary_hate/training_log_model_hate_or_not.csv', verbose = True)
 
 # FIT THE MODEL
-'''history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
+history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
                                             batch_size = 256,
                                             class_weight = class_weights_hate(y_test_hate),
-                                            callbacks = [callback_binary_hate(), csv_logger])'''
+                                            callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
-#model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/hate_filter_model.h5')
+model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/binary_hate_model.h5')
 #model_hate_binary.save('/model/hate_filter_model.h5')
 
 ###
 try:
-  model_hate_binary = tf.keras.models.load_model('/content/drive/MyDrive/Colab Notebooks/Deep Learning/model_hating_or_not.h5')
+  model_hate_binary = tf.keras.models.load_model('/content/drive/MyDrive/Colab Notebooks/Deep Learning/binary_hate_model.h5')
   print("Modello 'model_hate_binary.h5' caricato con successo.")
 except Exception as e:
   print(f"Errore nel caricamento del modello binario: {e}")
