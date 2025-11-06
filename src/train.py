@@ -36,7 +36,8 @@ from tensorflow.keras.models import load_model, Sequential
 
 # FROM MY FILES
 from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom
-from model import binary_hate_model, callback_binary_hate, class_weights_hate
+from model import binary_hate_model, callback_binary_hate, class_weights_hate, compute_class_weights, weighted_binary_crossentropy, \
+                  hate_type_model
 from evaluate import evaluation_class, evaluate_model
 
 
@@ -130,7 +131,23 @@ x_train_hate_type, x_test_hate_type, \
                                                          shuffle = True)
 
 # TOKENIATION AND PUDDING
-padded_train_type_hate_sequences, padded_test_type_hate_sequences, max_len_type_hate, vocabulary_type_hate_size, \
-  tokenizer_type_hate = tokenization_and_pudding(x_train = x_train_hate_type,
+padded_train_hate_type_sequences, padded_test_hate_type_sequences, max_len_hate_type, vocabulary_hate_type_size, \
+  tokenizer_hatetype = tokenization_and_pudding(x_train = x_train_hate_type,
                                                  x_test = x_test_hate_type)
 
+# CALCULATE THE WEIGHTS OF THE CLASSES
+weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.float32)
+
+#clear_session()
+model_hate_type = hate_type_model(vocabulary_size = vocabulary_hate_type_size,
+                                  max_len = max_len_hate_type,
+                                  dropout = 0.2,
+                                  optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-4),
+                                  loss = weighted_binary_crossentropy(weights_tensor = weights_tensor),
+                                  metrics = ['accuracy',
+                                             tf.keras.metrics.AUC(name = 'auc', multi_label=True),
+                                             tf.keras.metrics.Precision(name = 'precision'),
+                                             tf.keras.metrics.Recall(name = 'recall')])
+#model_hate_type.summary()
+
+csv_logger_hate_type = CSVLoggerCustom('results/binary_hate/training_log_model_hate_type.csv')

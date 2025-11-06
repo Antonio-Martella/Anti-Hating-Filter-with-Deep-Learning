@@ -1,28 +1,51 @@
 import numpy as np
 from sklearn.utils import class_weight
+import tensorflow as tf
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint
 from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization
 from tensorflow.keras.models import Sequential
 
 
+# ------------------------------
+# ---------- CALLBACK ----------
+# ------------------------------
+
 def callback_binary_hate():
 
-  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  # o 'val_auc' ecc.
-                                           factor = 0.7,          # riduci LR del 30%
-                                           patience = 2,          # aspetta 2 epoche senza miglioramento
-                                           min_lr = 1e-6,         # non andare sotto questo valore
-                                           verbose = 0)           # stampa i cambiamenti
+  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  
+                                           factor = 0.7,          
+                                           patience = 2,         
+                                           min_lr = 1e-6,        
+                                           verbose = 0)           
 
-  early_stop = EarlyStopping(monitor = 'val_loss',         # metrica da monitorare
-                             patience = 7,                 # quante epoche aspettare prima di fermarsi
-                             restore_best_weights = True,  # ripristina i pesi migliori
+  early_stop = EarlyStopping(monitor = 'val_loss',       
+                             patience = 7,                 
+                             restore_best_weights = True,
+                             verbose = 1)
+
+  return early_stop, reduce_learning_rate
+
+# ------------------------------
+
+def callback_hate_type():
+
+  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
+                                           factor = 0.75,           
+                                           patience = 5,            
+                                           min_lr = 1e-6,           
+                                           verbose = 0)            
+
+  early_stop = EarlyStopping(monitor = 'val_loss',         
+                             patience = 20,               
+                             restore_best_weights = True,  
                              verbose = 1)
 
   return early_stop, reduce_learning_rate
 
 
-#------------------------------------------------------------------
-
+# -----------------------------------
+# ---------- CLASS WEIGHTS ----------
+# -----------------------------------
 
 def class_weights_hate(y_train):
 
@@ -34,8 +57,33 @@ def class_weights_hate(y_train):
 
   return class_weights_hate
 
+# -----------------------------------
 
-#------------------------------------------------------------------
+def compute_class_weights(y_train):
+
+    class_counts = np.sum(y_train, axis=0)
+    class_freq = class_counts / y_train.shape[0]
+
+    weights = 1.0 / class_freq
+    weights = weights / np.sum(weights) * len(weights)
+
+    return weights
+
+
+# -----------------------------------
+# ---------- LOSS FUNCTION ----------
+# -----------------------------------
+
+def weighted_binary_crossentropy(y_true, y_pred, weights_tensor):
+
+    bce = tf.keras.backend.binary_crossentropy(y_true, y_pred)
+
+    return tf.reduce_sum(bce * weights_tensor, axis=-1)
+
+
+# ----------------------------
+# ---------- MODELS ----------
+# ----------------------------
 
 
 def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics):
@@ -43,17 +91,39 @@ def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metric
   model = Sequential()
   model.add(Embedding(input_dim = vocabulary_size, output_dim = 128, input_length = max_len))
 
-  #
   model.add(Bidirectional(LSTM(32, return_sequences=False, activation='tanh')))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
-  #
   model.add(Dense(16, activation='relu'))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
   model.add(Dense(units = 1, activation = 'sigmoid'))
+  model.build(input_shape = (None, max_len))
+
+  model.compile(optimizer = optimizer,
+                loss = loss,
+                metrics = metrics)
+
+  return model
+
+# ----------------------------
+
+def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics):
+
+  model = Sequential()
+  model.add(Embedding(input_dim = vocabulary_size, output_dim = 256, input_length = max_len))
+
+  model.add(Bidirectional(LSTM(units = 256, activation = 'tanh')))
+  model.add(BatchNormalization())
+  model.add(Dropout(dropout))
+
+  model.add(Dense(units = 128, activation = 'relu'))
+  model.add(BatchNormalization())
+  model.add(Dropout(dropout))
+
+  model.add(Dense(units = 6, activation = 'sigmoid'))
   model.build(input_shape = (None, max_len))
 
   model.compile(optimizer = optimizer,
