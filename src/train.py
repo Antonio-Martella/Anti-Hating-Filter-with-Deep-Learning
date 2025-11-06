@@ -40,13 +40,14 @@ from model import binary_hate_model, callback_binary_hate, class_weights_hate
 from evaluate import evaluation_class, evaluate_model
 
 
-# PREPROCESSING CORPUS
+# LOADING AND PREPROCESSING OF THE TEXT CORPUS
 df = load_dataset()
 df = preprocess_text(df)
 
 
 # -------------------------------------------------------------------
-# ----- FIRST MODEL, BINARY CLASSIFICATION, HATING OR NOT HATING -----
+# ----- FIRST MODEL, BINARY CLASSIFICATION, HATING OR NOT HATING ----
+# -------------------------------------------------------------------
 df['has_hate'] = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']].any(axis = 1).astype(int)
 x = df.comment_text.values
 y_hate = df.loc[:, 'has_hate']
@@ -105,8 +106,9 @@ except Exception as e:
 evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, folder = 'binary_hate')
 
 
-# ----------------------------------------------------------
-# --- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE ---
+# --------------------------------------------------------------
+# ----- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE -----
+# --------------------------------------------------------------
 df_hate_type = df[df["has_hate"] == 1]
 x_hate_type = df_hate_type.comment_text.values
 y_hate_type = df_hate_type.loc[:, 'toxic':'identity_hate']
