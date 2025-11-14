@@ -91,12 +91,12 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
-                                            batch_size = 256,
+                                            batch_size = 1024, #256
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
-#model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/binary_hate_model.h5')
+model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/binary_hate_model.h5')
 model_hate_binary.save('../models/binary_hate_model.h5')
 
 ###
@@ -149,7 +149,7 @@ model_hate_type = hate_type_model(vocabulary_size = vocabulary_hate_type_size,
                                              tf.keras.metrics.Precision(name = 'precision'),
                                              tf.keras.metrics.Recall(name = 'recall')])
 
-csv_logger_hate_type = CSVLoggerCustom('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/binary_hate_model.h5')
+csv_logger_hate_type = CSVLoggerCustom('../results/binary_hate/log_training_model_hate_type.csv', verbose = True)
 
 history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         y_train_hate_type,
@@ -158,6 +158,7 @@ history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         batch_size = 64,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 
+model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
 model_hate_type.save('../models/model_hate_type.h5')
 
 ###
@@ -172,5 +173,4 @@ except Exception as e:
   print(f"\033[91mError loading model 'model_hate_type.h5': {e}\033[0m")
 
 
-# EVALUATE THE MODEL AND SAVE IN /result
-evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, folder = 'binary_hate')
+y_test_pred_hate = model_hate_binary.predict(padded_test_hate_sequences)

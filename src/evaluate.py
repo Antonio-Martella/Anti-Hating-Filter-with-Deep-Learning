@@ -4,7 +4,8 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve, \
+  accuracy_score, precision_score, recall_score, f1_score
 
 
 def evaluation_class(count, folder = None):
@@ -40,6 +41,18 @@ def evaluation_class(count, folder = None):
 # ---------------------------------------------------------------
 
 
+def f1_score_optimization(y_true, y_pred):
+  precision, recall, thresholds = precision_recall_curve(y_true, y_pred)
+  f1_scores = (2 * precision[:-1] * recall[:-1]) / (precision[:-1] + recall[:-1])
+  f1_scores[np.isnan(f1_scores)] = 0  
+  optimal_threshold = thresholds[np.argmax(f1_scores)]
+  print(f"\033[92mThreshold ottimale per la classificazione binaria (massimizzando l'F1-score): {optimal_threshold:.3f}\033[0m")
+  return optimal_threshold
+
+
+# ---------------------------------------------------------------
+
+
 def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   '''
   Evaluates the model on the test set and saves the results in `results/{folder}`.
@@ -59,21 +72,33 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   - metrics_report.csv : precision, recall, f1, support metrics
   - confusion_matrix.png : confusion matrix saved as an image
   ''' 
-  y_pred = (model.predict(X_test) >= threshold).astype(int)
+  y_pred = model.predict(X_test)
+  optimal_threshold = f1_score_optimization(y_test, y_pred)
 
-  report = classification_report(y_test, y_pred, output_dict=True)
+  y_pred_opt = (y_pred >= optimal_threshold).astype(int).flatten()
+
+  accuracy_opt = accuracy_score(y_test, y_pred_opt)
+  precision_opt = precision_score(y_test, y_pred_opt, zero_division=0)
+  recall_opt = recall_score(y_test, y_pred_opt, zero_division=0)
+  f1_opt = f1_score(y_test, y_pred_opt, zero_division=0)
+
+  print("\n\033[92mRisultati del modello binario sul set di test con threshold ottimale:\033[0m")
+  print(f"\033[92mAccuracy: {accuracy_opt:.3f}\033[0m")
+  print(f"\033[92mPrecision: {precision_opt:.3f}\033[0m")
+  print(f"\033[92mRecall: {recall_opt:.3f}\033[0m")
+  print(f"\033[92mF1-Score: {f1_opt:.3f}\033[0m")
+
+  report = classification_report(y_test, y_pred_opt, output_dict=True)
   report_df = pd.DataFrame(report).transpose()
   os.makedirs(f"../results/{folder}", exist_ok=True)
   report_df.to_csv(f'../results/{folder}/metrics_report_on_test.csv', index=True)
 
-  cm = confusion_matrix(y_test, y_pred)
-  plt.figure(figsize=(5, 4))
   if folder == 'binary_hate':
+    cm = confusion_matrix(y_test, y_pred_opt)
+    plt.figure(figsize=(5, 4))
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["No Hate", "Hate"], yticklabels=["No Hate", "Hate"])
-  elif folder == '':
-    _
-  plt.xlabel("Predict")
-  plt.ylabel("Real")
-  plt.title("Confusion Matrix")
-  plt.savefig(f"../results/{folder}/confusion_matrix.png")
-  plt.close()
+    plt.xlabel("Predict")
+    plt.ylabel("Real")
+    plt.title("Confusion Matrix")
+    plt.savefig(f"../results/{folder}/confusion_matrix.png")
+    plt.close()
