@@ -1,6 +1,6 @@
 # Dataset
 
-This project uses a text dataset to train the anti-hating filter.
+This project uses a dataset of 159571 generic text comments labeled across six different hate types.
 
 ## Content
 In this folder there is the file:
