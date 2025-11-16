@@ -44,6 +44,8 @@ def preprocess_text(df: pd.DataFrame, text_col: str = "comment_text") -> pd.Data
     - Remove multiple spaces
     """
     def normalize(text):
+        if not isinstance(text, str):
+            return ""
         text = text.lower()
         text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
         text = re.sub(r'@\w+', '', text)

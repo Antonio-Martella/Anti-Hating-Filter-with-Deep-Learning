@@ -76,7 +76,7 @@ clear_session()
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
                                       dropout = 0.2,
-                                      optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-3),
+                                      optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-2),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
@@ -98,16 +98,6 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
 model_hate_binary.save('../models/model_hate_binary.h5')
-
-###
-'''try:
-  model_hate_binary = load_model('../models/model_hate_binary.h5')
-  print("\033[92mModel 'model_hate_binary.h5' loaded successfully.\033[0m")
-except Exception as e:
-  print(f"\033[91mError loading model 'model_hate_binary.h5': {e}\033[0m")
-
-# EVALUATE THE MODEL AND SAVE IN /result
-evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, folder = 'binary_hate')'''
 
 
 # --------------------------------------------------------------
@@ -142,7 +132,7 @@ np.save('../results/hate_type/weights_tensor.npy', weights_tensor.numpy())
 model_hate_type = hate_type_model(vocabulary_size = vocabulary_hate_type_size,
                                   max_len = max_len_hate_type,
                                   dropout = 0.2,
-                                  optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-3),
+                                  optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-4),
                                   loss = weighted_binary_crossentropy(weights_tensor),
                                   metrics = ['accuracy',
                                              tf.keras.metrics.AUC(name = 'auc', multi_label=True),
@@ -160,17 +150,3 @@ history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
 
 model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
 model_hate_type.save('../models/model_hate_type.h5')
-
-###
-'''try:
-  model_hate_type = tf.keras.models.load_model(
-    "../models/model_hate_type.h5",
-    custom_objects={"weighted_binary_crossentropy": weighted_binary_crossentropy(weights_tensor)},
-    compile=False
-  )
-  print("\033[92mModel 'model_hate_type.h5' loaded successfully.\033[0m")
-except Exception as e:
-  print(f"\033[91mError loading model 'model_hate_type.h5': {e}\033[0m")
-
-
-y_test_pred_hate = model_hate_binary.predict(padded_test_hate_sequences)'''
