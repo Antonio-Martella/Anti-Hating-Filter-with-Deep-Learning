@@ -75,8 +75,8 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, vocabular
 clear_session()
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
-                                      dropout = 0.3,
-                                      optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-2),
+                                      dropout = 0.2,
+                                      optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-3),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
@@ -91,23 +91,23 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
-                                            batch_size = 1024, #256
+                                            batch_size = 1024, 
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
-model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_binary_hate.h5')
-model_hate_binary.save('../models/model_binary_hate.h5')
+model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
+model_hate_binary.save('../models/model_hate_binary.h5')
 
 ###
-try:
-  model_hate_binary = load_model('../models/model_binary_hate.h5')
-  print("\033[92mModel 'model_binary_hate.h5' loaded successfully.\033[0m")
+'''try:
+  model_hate_binary = load_model('../models/model_hate_binary.h5')
+  print("\033[92mModel 'model_hate_binary.h5' loaded successfully.\033[0m")
 except Exception as e:
-  print(f"\033[91mError loading model 'model_binary_hate.h5': {e}\033[0m")
+  print(f"\033[91mError loading model 'model_hate_binary.h5': {e}\033[0m")
 
 # EVALUATE THE MODEL AND SAVE IN /result
-evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, folder = 'binary_hate')
+evaluate_model(model_hate_binary, padded_test_hate_sequences, y_test_hate, folder = 'binary_hate')'''
 
 
 # --------------------------------------------------------------
@@ -142,7 +142,7 @@ np.save('../results/hate_type/weights_tensor.npy', weights_tensor.numpy())
 model_hate_type = hate_type_model(vocabulary_size = vocabulary_hate_type_size,
                                   max_len = max_len_hate_type,
                                   dropout = 0.2,
-                                  optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-4),
+                                  optimizer = tf.keras.optimizers.Adam(learning_rate = 1e-3),
                                   loss = weighted_binary_crossentropy(weights_tensor),
                                   metrics = ['accuracy',
                                              tf.keras.metrics.AUC(name = 'auc', multi_label=True),
