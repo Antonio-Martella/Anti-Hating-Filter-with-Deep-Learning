@@ -58,5 +58,6 @@ X_sequences = tokenizer.texts_to_sequences(X)
 padded_X_sequences = pad_sequences(sequences = X_sequences, maxlen = int(max_len))
 
 y_pred = model_hate_binary.predict(padded_X_sequences)
-y_pred_opt = (y_pred >= best_threshold_binary_hate).astype(int).flatten()
+print(y_pred)
+y_pred_opt = (y_pred >= 0.001).astype(int).flatten()
 print(y_pred_opt)
