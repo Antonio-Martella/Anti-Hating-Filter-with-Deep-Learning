@@ -13,8 +13,8 @@ from tensorflow.keras.models import Sequential
 def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  
-                                           factor = 0.7,          
-                                           patience = 2,         
+                                           factor = 0.75,          
+                                           patience = 1,         
                                            min_lr = 1e-6,        
                                            verbose = 0)           
 
@@ -31,12 +31,12 @@ def callback_hate_type():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
                                            factor = 0.75,           
-                                           patience = 5,            
+                                           patience = 2,            
                                            min_lr = 1e-6,           
                                            verbose = 0)            
 
   early_stop = EarlyStopping(monitor = 'val_loss',         
-                             patience = 20,               
+                             patience = 10,               
                              restore_best_weights = True,  
                              verbose = 1)
 
@@ -140,7 +140,3 @@ def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics)
   return model
 
 # ----------------------------
-
-def prediction(first_model, second_model, threshold, X):
-
-  first_model.predict
