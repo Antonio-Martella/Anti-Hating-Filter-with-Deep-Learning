@@ -75,7 +75,7 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, vocabular
 clear_session()
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
-                                      dropout = 0.2,
+                                      dropout = 0.3,
                                       optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-2),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
@@ -91,7 +91,7 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
-                                            batch_size = 1024, 
+                                            batch_size = 256, 
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 

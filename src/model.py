@@ -13,13 +13,13 @@ from tensorflow.keras.models import Sequential
 def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  
-                                           factor = 0.75,          
-                                           patience = 3,         
+                                           factor = 0.7,          
+                                           patience = 2,         
                                            min_lr = 1e-6,        
                                            verbose = 0)           
 
   early_stop = EarlyStopping(monitor = 'val_loss',       
-                             patience = 10,                 
+                             patience = 7,                 
                              restore_best_weights = True,
                              verbose = 1)
 
@@ -31,12 +31,12 @@ def callback_hate_type():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
                                            factor = 0.75,           
-                                           patience = 3,            
+                                           patience = 5,            
                                            min_lr = 1e-6,           
                                            verbose = 0)            
 
   early_stop = EarlyStopping(monitor = 'val_loss',         
-                             patience = 10,               
+                             patience = 20,               
                              restore_best_weights = True,  
                              verbose = 1)
 
@@ -96,11 +96,11 @@ def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metric
                       output_dim = 128, 
                       input_length = max_len))
 
-  model.add(Bidirectional(LSTM(64, return_sequences=False)))
+  model.add(Bidirectional(LSTM(32, return_sequences=False, activation='tanh')))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
-  model.add(Dense(32, activation='relu'))
+  model.add(Dense(16, activation='relu'))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
@@ -122,11 +122,11 @@ def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics)
                       output_dim = 256, 
                       input_length = max_len))
 
-  model.add(Bidirectional(LSTM(128, return_sequences=False)))
+  model.add(Bidirectional(LSTM(units = 256, activation = 'tanh')))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
-  model.add(Dense(units = 64, activation = 'relu'))
+  model.add(Dense(units = 128, activation = 'relu'))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
