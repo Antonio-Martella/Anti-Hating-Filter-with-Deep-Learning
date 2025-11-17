@@ -5,6 +5,8 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCh
 from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization, GlobalMaxPooling1D, Layer
 from tensorflow.keras.models import Sequential
 
+from layers.attention import AttentionLayer
+
 
 # ------------------------------
 # ---------- CALLBACK ----------
@@ -13,13 +15,13 @@ from tensorflow.keras.models import Sequential
 def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  
-                                           factor = 0.75,          
+                                           factor = 0.5,          
                                            patience = 2,         
                                            min_lr = 1e-6,        
                                            verbose = 0)           
 
   early_stop = EarlyStopping(monitor = 'val_loss',       
-                             patience = 10,                 
+                             patience = 5,                 
                              restore_best_weights = True,
                              verbose = 1)
 
@@ -30,13 +32,13 @@ def callback_binary_hate():
 def callback_hate_type():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
-                                           factor = 0.75,           
+                                           factor = 0.5,           
                                            patience = 2,            
                                            min_lr = 1e-6,           
                                            verbose = 0)            
 
   early_stop = EarlyStopping(monitor = 'val_loss',         
-                             patience = 10,               
+                             patience = 5,               
                              restore_best_weights = True,  
                              verbose = 1)
 
@@ -93,15 +95,15 @@ def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metric
 
   model = Sequential()
   model.add(Embedding(input_dim = vocabulary_size, 
-                      output_dim = 128, 
+                      output_dim = 64, 
                       input_length = max_len))
 
-  model.add(Bidirectional(LSTM(64, return_sequences=True, activation='tanh')))
+  model.add(Bidirectional(LSTM(32, return_sequences=True, activation='tanh')))
   model.add(AttentionLayer())
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
-  model.add(Dense(32, activation='relu'))
+  model.add(Dense(16, activation='relu'))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
@@ -140,23 +142,3 @@ def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics)
                 metrics = metrics)
 
   return model
-
-# ----------------------------
-
-
-class AttentionLayer(Layer):
-    def __init__(self):
-        super(AttentionLayer, self).__init__()
-
-    def build(self, input_shape):
-        self.W = self.add_weight(name="att_weight", shape=(input_shape[-1], 1),
-                                 initializer="normal")
-        self.b = self.add_weight(name="att_bias", shape=(input_shape[1], 1),
-                                 initializer="zeros")
-        super(AttentionLayer, self).build(input_shape)
-
-    def call(self, inputs):
-        e = tf.nn.tanh(tf.tensordot(inputs, self.W, axes=1) + self.b)
-        a = tf.nn.softmax(e, axis=1)
-        output = inputs * a
-        return tf.reduce_sum(output, axis=1)

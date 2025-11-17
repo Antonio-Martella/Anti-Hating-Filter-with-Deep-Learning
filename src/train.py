@@ -70,6 +70,7 @@ from model import binary_hate_model, callback_binary_hate, class_weights_hate, c
 from evaluate import evaluation_class, evaluate_model
 
 
+
 # LOADING AND PREPROCESSING OF THE TEXT CORPUS
 df = load_dataset()
 df = preprocess_text(df)
@@ -147,7 +148,7 @@ evaluation_class(count = class_counts, folder = 'hate_type')
 x_train_hate_type, x_test_hate_type, \
   y_train_hate_type, y_test_hate_type = train_test_split(x_hate_type,
                                                          y_hate_type, 
-                                                         test_size = 0.2, 
+                                                         test_size = 0.1, 
                                                          random_state = 1, 
                                                          shuffle = True)
 
@@ -175,7 +176,7 @@ csv_logger_hate_type = CSVLoggerCustom('../results/hate_type/log_training_model_
 history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         y_train_hate_type,
                                         epochs = 100,
-                                        validation_split = 0.2,
+                                        validation_split = 0.1,
                                         batch_size = 128,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 

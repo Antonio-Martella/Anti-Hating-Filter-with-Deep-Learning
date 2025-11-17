@@ -9,10 +9,13 @@ from model import weighted_binary_crossentropy
 from data_utils import  preprocess_text
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
+from layers.attention import AttentionLayer
+
 
 # Load the first model
 try:
-  model_hate_binary = load_model('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
+  model_hate_binary = load_model('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5',
+                                 custom_objects={"AttentionLayer": AttentionLayer})
   print(f"\033[92mModel 'model_hate_binary.h5' loaded successfully\033[0m")
 except Exception as e:
   print(f"\033[91mError loading model 'model_hate_binary.h5': {e}\033[0m")
