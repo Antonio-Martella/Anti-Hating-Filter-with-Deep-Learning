@@ -1,3 +1,7 @@
+# ---------------------------------------
+# WARNING
+# ---------------------------------------
+
 import os, sys
 stderr = sys.stderr
 sys.stderr = open(os.devnull, 'w') 
@@ -13,11 +17,36 @@ sys.stderr = stderr
 import absl.logging
 absl.logging.set_verbosity(absl.logging.ERROR)
 
+
+# ---------------------------------------
+# REPRODUCIBILITY 
+# ---------------------------------------
+import random
+import numpy as np
+
+SEED = 42
+
+os.environ["PYTHONHASHSEED"] = str(SEED)
+os.environ["TF_DETERMINISTIC_OPS"] = "1"
+os.environ["TF_CUDNN_DETERMINISTIC"] = "1"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["TF_NUM_INTRAOP_THREADS"] = "1"
+os.environ["TF_NUM_INTEROP_THREADS"] = "1"
+
+random.seed(SEED)
+np.random.seed(SEED)
+tf.random.set_seed(SEED)
+
+# ---------------------------------------
+# REPRODUCIBILITY 
+# ---------------------------------------
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import seaborn as sns
+import random
 
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_fscore_support, average_precision_score, accuracy_score, \

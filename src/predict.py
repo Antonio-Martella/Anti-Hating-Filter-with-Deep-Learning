@@ -12,7 +12,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # Load the first model
 try:
-  model_hate_binary = load_model('../models/model_hate_binary.h5')
+  model_hate_binary = load_model('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
   print(f"\033[92mModel 'model_hate_binary.h5' loaded successfully\033[0m")
 except Exception as e:
   print(f"\033[91mError loading model 'model_hate_binary.h5': {e}\033[0m")
@@ -24,7 +24,7 @@ weights_tensor = tf.constant(loaded_weights, dtype=tf.float32)
 
 # Load the second model
 try:
-  model_hate_type = load_model("../models/model_hate_type.h5",
+  model_hate_type = load_model("/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5",
                                custom_objects={"weighted_binary_crossentropy": weighted_binary_crossentropy(weights_tensor)},
                                compile=False)
   print(f"\033[92mModel 'model_hate_type.h5' loaded successfully\033[0m")
@@ -58,6 +58,6 @@ X_sequences = tokenizer.texts_to_sequences(X)
 padded_X_sequences = pad_sequences(sequences = X_sequences, maxlen = int(max_len))
 
 y_pred = model_hate_binary.predict(padded_X_sequences)
-print(y_pred)
 y_pred_opt = (y_pred >= best_threshold_binary_hate).astype(int).flatten()
-print(y_pred_opt)
+for i in range(len(X)):
+  print(X[i], y_pred[i], y_pred_opt[i])
