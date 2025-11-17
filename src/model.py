@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.utils import class_weight
 import tensorflow as tf
 from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint
-from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization, GlobalMaxPooling1D
+from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization, GlobalMaxPooling1D, Layer
 from tensorflow.keras.models import Sequential
 
 
@@ -14,12 +14,12 @@ def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  
                                            factor = 0.75,          
-                                           patience = 1,         
+                                           patience = 2,         
                                            min_lr = 1e-6,        
                                            verbose = 0)           
 
   early_stop = EarlyStopping(monitor = 'val_loss',       
-                             patience = 7,                 
+                             patience = 10,                 
                              restore_best_weights = True,
                              verbose = 1)
 
@@ -96,11 +96,12 @@ def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metric
                       output_dim = 128, 
                       input_length = max_len))
 
-  model.add(Bidirectional(LSTM(32, return_sequences=False, activation='tanh')))
+  model.add(Bidirectional(LSTM(64, return_sequences=True, activation='tanh')))
+  model.add(AttentionLayer())
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
-  model.add(Dense(16, activation='relu'))
+  model.add(Dense(32, activation='relu'))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
@@ -122,7 +123,8 @@ def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics)
                       output_dim = 256, 
                       input_length = max_len))
 
-  model.add(Bidirectional(LSTM(units = 256, activation = 'tanh')))
+  model.add(Bidirectional(LSTM(units = 256, return_sequences=True, activation = 'tanh')))
+  model.add(AttentionLayer())
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
@@ -140,3 +142,21 @@ def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics)
   return model
 
 # ----------------------------
+
+
+class AttentionLayer(Layer):
+    def __init__(self):
+        super(AttentionLayer, self).__init__()
+
+    def build(self, input_shape):
+        self.W = self.add_weight(name="att_weight", shape=(input_shape[-1], 1),
+                                 initializer="normal")
+        self.b = self.add_weight(name="att_bias", shape=(input_shape[1], 1),
+                                 initializer="zeros")
+        super(AttentionLayer, self).build(input_shape)
+
+    def call(self, inputs):
+        e = tf.nn.tanh(tf.tensordot(inputs, self.W, axes=1) + self.b)
+        a = tf.nn.softmax(e, axis=1)
+        output = inputs * a
+        return tf.reduce_sum(output, axis=1)

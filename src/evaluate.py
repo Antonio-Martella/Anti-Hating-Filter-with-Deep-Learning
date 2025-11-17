@@ -84,11 +84,11 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   recall_opt = recall_score(y_test, y_pred_opt, zero_division=0)
   f1_opt = f1_score(y_test, y_pred_opt, zero_division=0)
 
-  print("\n\033[92mRisultati del modello binario sul set di test con threshold ottimale:\033[0m")
-  print(f"\033[92mAccuracy: {accuracy_opt:.3f}\033[0m")
-  print(f"\033[92mPrecision: {precision_opt:.3f}\033[0m")
-  print(f"\033[92mRecall: {recall_opt:.3f}\033[0m")
-  print(f"\033[92mF1-Score: {f1_opt:.3f}\033[0m")
+  #print("\n\033[92mRisultati del modello binario sul set di test con threshold ottimale:\033[0m")
+  #print(f"\033[92mAccuracy: {accuracy_opt:.3f}\033[0m")
+  #print(f"\033[92mPrecision: {precision_opt:.3f}\033[0m")
+  #print(f"\033[92mRecall: {recall_opt:.3f}\033[0m")
+  #print(f"\033[92mF1-Score: {f1_opt:.3f}\033[0m")
 
   report = classification_report(y_test, y_pred_opt, output_dict=True)
   report_df = pd.DataFrame(report).transpose()

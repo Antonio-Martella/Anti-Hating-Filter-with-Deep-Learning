@@ -120,13 +120,15 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
-                                            batch_size = 256, 
+                                            batch_size = 1024, 
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
 model_hate_binary.save('../models/model_hate_binary.h5')
+
+evaluate_model(model_hate_binary, x_test_hate, y_test_hate, folder='binary_hate')
 
 
 # --------------------------------------------------------------
@@ -174,7 +176,7 @@ history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         y_train_hate_type,
                                         epochs = 100,
                                         validation_split = 0.2,
-                                        batch_size = 64,
+                                        batch_size = 128,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 
 model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
