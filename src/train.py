@@ -27,11 +27,11 @@ import numpy as np
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-os.environ["TF_DETERMINISTIC_OPS"] = '0'
-os.environ["TF_CUDNN_DETERMINISTIC"] = '0'
-os.environ["OMP_NUM_THREADS"] = '0'
-os.environ["TF_NUM_INTRAOP_THREADS"] = '0'
-os.environ["TF_NUM_INTEROP_THREADS"] = '0'
+os.environ["TF_DETERMINISTIC_OPS"] = '1'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
+os.environ["TF_NUM_INTEROP_THREADS"] = '1'
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -106,7 +106,7 @@ clear_session()
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
                                       dropout = 0.2,
-                                      optimizer = tf.keras.optimizers.AdamW(learning_rate = 1e-4),
+                                      optimizer = tf.keras.optimizers.AdamW(learning_rate = 3e-4),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
