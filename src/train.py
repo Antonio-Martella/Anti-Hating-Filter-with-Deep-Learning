@@ -102,11 +102,10 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, vocabular
                                                    x_test = x_test_hate)
 
 # INSTANTIATE THE MODEL AND HYPERPARAMETERS
-clear_session()
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
                                       dropout = 0.3,
-                                      optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-2),
+                                      optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-3),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
@@ -123,7 +122,7 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             validation_split = 0.2,
                                             batch_size = 256,
                                             class_weight = class_weights_hate(y_test_hate),
-                                            callbacks = [callback_binary_hate(), csv_logger_binary_hate])
+                                            callbacks = [callback_binary_hate()])
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
@@ -138,8 +137,9 @@ evaluate_model(model_hate_binary,
 model_hate_binary.evaluate(padded_test_hate_sequences,y_test_hate)
 
 y_pred = model_hate_binary.predict(padded_test_hate_sequences)
-for i in range(30):
-  print(y_pred[i])
+
+for i in range(100):
+  print(y_pred[i], y_test_hate.iloc[i])
 
 # --------------------------------------------------------------
 # ----- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE -----
