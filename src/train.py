@@ -183,8 +183,8 @@ history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         y_train_hate_type,
                                         epochs = 100,
                                         validation_split = 0.2,
-                                        batch_size = 128,
+                                        batch_size = 64,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 
-model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
+model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
 #model_hate_type.save('../models/model_hate_type.h5')
