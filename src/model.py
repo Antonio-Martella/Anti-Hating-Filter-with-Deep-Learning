@@ -94,12 +94,10 @@ def weighted_binary_crossentropy(weights):
 def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics):
 
   model = Sequential()
-  model.add(Embedding(input_dim = vocabulary_size, 
-                      output_dim = 64, 
-                      input_length = max_len))
+  model.add(Embedding(input_dim = vocabulary_size, output_dim = 128, input_length = max_len))
 
-  model.add(Bidirectional(LSTM(32, return_sequences=True, activation='tanh')))
-  model.add(AttentionLayer())
+  model.add(Bidirectional(LSTM(32, activation='tanh')))
+  #model.add(AttentionLayer())
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 

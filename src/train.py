@@ -105,8 +105,8 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, vocabular
 clear_session()
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
-                                      dropout = 0.2,
-                                      optimizer = tf.keras.optimizers.AdamW(learning_rate = 3e-4),
+                                      dropout = 0.3,
+                                      optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-2),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
@@ -121,7 +121,7 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
-                                            batch_size = 256, 
+                                            batch_size = 256,
                                             class_weight = class_weights_hate(y_test_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
@@ -137,11 +137,15 @@ evaluate_model(model_hate_binary,
 
 model_hate_binary.evaluate(padded_test_hate_sequences,y_test_hate)
 
+y_pred = model_hate_binary.predict(padded_test_hate_sequences)
+for i in range(30):
+  print(y_pred[i])
+
 # --------------------------------------------------------------
 # ----- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE -----
 # --------------------------------------------------------------
 # SELECT COMMENTS WITH AT LEAST ONE TYPE OF HATE
-df_hate_type = df[df["has_hate"] == 1]
+'''df_hate_type = df[df["has_hate"] == 1]
 x_hate_type = df_hate_type.comment_text.values
 y_hate_type = df_hate_type.loc[:, 'toxic':'identity_hate']
 
@@ -186,4 +190,4 @@ history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 
 model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
-model_hate_type.save('../models/model_hate_type.h5')
+model_hate_type.save('../models/model_hate_type.h5')'''
