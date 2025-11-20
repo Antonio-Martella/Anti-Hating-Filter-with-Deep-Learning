@@ -27,11 +27,11 @@ import numpy as np
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-os.environ["TF_DETERMINISTIC_OPS"] = '0'
-os.environ["TF_CUDNN_DETERMINISTIC"] = '0'
-os.environ["OMP_NUM_THREADS"] = '0'
-os.environ["TF_NUM_INTRAOP_THREADS"] = '0'
-os.environ["TF_NUM_INTEROP_THREADS"] = '0'
+os.environ["TF_DETERMINISTIC_OPS"] = '1'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
+os.environ["TF_NUM_INTEROP_THREADS"] = '1'
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -127,7 +127,6 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
-#model_hate_binary.save('../models/model_hate_binary.h5')
 
 evaluate_model(model_hate_binary, 
                padded_test_hate_sequences, 
@@ -187,4 +186,3 @@ history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 
 model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
-#model_hate_type.save('../models/model_hate_type.h5')
