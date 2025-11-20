@@ -25,7 +25,7 @@ def evaluation_class(count, folder = None):
   results/{folder}/distribution_class.png : image of the bar chart
   '''
 
-  os.makedirs(f"../results/{folder}", exist_ok=True)
+  os.makedirs(f"/content/Anti-Hating-Filter-with-Deep-Learning/results/{folder}", exist_ok=True)
   
   plt.figure(figsize=(6, 4))
   count.plot(kind='bar', color=sns.color_palette('viridis', len(count)))
@@ -47,7 +47,7 @@ def f1_score_optimization(y_true, y_pred):
   f1_scores = (2 * precision[:-1] * recall[:-1]) / (precision[:-1] + recall[:-1])
   f1_scores[np.isnan(f1_scores)] = 0  
   optimal_threshold = thresholds[np.argmax(f1_scores)]
-  with open('../results/binary_hate/best_threshold.json', 'w') as f:
+  with open('/content/Anti-Hating-Filter-with-Deep-Learning/results/binary_hate/best_threshold.json', 'w') as f:
     json.dump({"threshold": float(optimal_threshold)}, f, indent=4)
   return optimal_threshold
 
@@ -94,7 +94,7 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   report = classification_report(y_test, y_pred_opt, output_dict=True)
   report_df = pd.DataFrame(report).transpose()
   os.makedirs(f"../results/{folder}", exist_ok=True)
-  report_df.to_csv(f'../results/{folder}/metrics_report_on_test.csv', index=True)
+  report_df.to_csv(f'/content/Anti-Hating-Filter-with-Deep-Learning/results/{folder}/metrics_report_on_test.csv', index=True)
 
   if folder == 'binary_hate':
     cm = confusion_matrix(y_test, y_pred_opt)
@@ -103,5 +103,5 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
     plt.xlabel("Predict")
     plt.ylabel("Real")
     plt.title("Confusion Matrix")
-    plt.savefig(f"../results/{folder}/confusion_matrix.png")
+    plt.savefig(f"/content/Anti-Hating-Filter-with-Deep-Learning/results/{folder}/confusion_matrix.png")
     plt.close()
