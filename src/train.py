@@ -27,11 +27,11 @@ import numpy as np
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-os.environ["TF_DETERMINISTIC_OPS"] = '1'
-os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
-os.environ["OMP_NUM_THREADS"] = '1'
-os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
-os.environ["TF_NUM_INTEROP_THREADS"] = '1'
+os.environ["TF_DETERMINISTIC_OPS"] = '0'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '0'
+os.environ["OMP_NUM_THREADS"] = '0'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '0'
+os.environ["TF_NUM_INTEROP_THREADS"] = '0'
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -99,13 +99,14 @@ x_train_hate, x_test_hate, \
 # TOKENIATION AND PUDDING
 padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, vocabulary_hate_size, \
   tokenizer_binary_hate = tokenization_and_pudding(x_train = x_train_hate,
-                                                   x_test = x_test_hate)
+                                                   x_test = x_test_hate,
+                                                   folder = 'binary_hate')
 
 # INSTANTIATE THE MODEL AND HYPERPARAMETERS
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
                                       dropout = 0.3,
-                                      optimizer = tf.keras.optimizers.RMSprop(learning_rate = 1e-3),
+                                      optimizer = tf.keras.optimizers.AdamW(learning_rate = 1e-3),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
@@ -122,11 +123,11 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             validation_split = 0.2,
                                             batch_size = 256,
                                             class_weight = class_weights_hate(y_test_hate),
-                                            callbacks = [callback_binary_hate()])
+                                            callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
-model_hate_binary.save('../models/model_hate_binary.h5')
+#model_hate_binary.save('../models/model_hate_binary.h5')
 
 evaluate_model(model_hate_binary, 
                padded_test_hate_sequences, 
@@ -145,7 +146,7 @@ for i in range(100):
 # ----- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE -----
 # --------------------------------------------------------------
 # SELECT COMMENTS WITH AT LEAST ONE TYPE OF HATE
-'''df_hate_type = df[df["has_hate"] == 1]
+df_hate_type = df[df["has_hate"] == 1]
 x_hate_type = df_hate_type.comment_text.values
 y_hate_type = df_hate_type.loc[:, 'toxic':'identity_hate']
 
@@ -157,14 +158,15 @@ evaluation_class(count = class_counts, folder = 'hate_type')
 x_train_hate_type, x_test_hate_type, \
   y_train_hate_type, y_test_hate_type = train_test_split(x_hate_type,
                                                          y_hate_type, 
-                                                         test_size = 0.1, 
+                                                         test_size = 0.2, 
                                                          random_state = 1, 
                                                          shuffle = True)
 
 # TOKENIATION AND PUDDING
 padded_train_hate_type_sequences, padded_test_hate_type_sequences, max_len_hate_type, vocabulary_hate_type_size, \
   tokenizer_hate_type = tokenization_and_pudding(x_train = x_train_hate_type,
-                                                 x_test = x_test_hate_type)
+                                                 x_test = x_test_hate_type,
+                                                 folder = 'hate_type')
 
 # CALCULATE THE WEIGHTS OF THE CLASSES
 weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.float32)
@@ -172,7 +174,7 @@ np.save('../results/hate_type/weights_tensor.npy', weights_tensor.numpy())
 
 model_hate_type = hate_type_model(vocabulary_size = vocabulary_hate_type_size,
                                   max_len = max_len_hate_type,
-                                  dropout = 0.2,
+                                  dropout = 0.3,
                                   optimizer = tf.keras.optimizers.AdamW(learning_rate = 1e-3),
                                   loss = weighted_binary_crossentropy(weights_tensor),
                                   metrics = ['accuracy',
@@ -189,5 +191,5 @@ history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         batch_size = 128,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 
-model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
-model_hate_type.save('../models/model_hate_type.h5')'''
+#model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
+model_hate_type.save('../models/model_hate_type.h5')

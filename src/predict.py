@@ -14,7 +14,7 @@ from layers.attention import AttentionLayer
 
 # Load the first model
 try:
-  model_hate_binary = load_model('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5',
+  model_hate_binary = load_model('/content/Anti-Hating-Filter-with-Deep-Learning/models/binary_hate/model_hate_binary.h5',
                                  custom_objects={"AttentionLayer": AttentionLayer})
   print(f"\033[92mModel 'model_hate_binary.h5' loaded successfully\033[0m")
 except Exception as e:
@@ -22,12 +22,13 @@ except Exception as e:
 
 
 # LOAD THE TENSOR WEIGHTS FOR THE 'model_hate_type'
-loaded_weights = np.load('../results/hate_type/weights_tensor.npy')
+loaded_weights = np.load('/content/Anti-Hating-Filter-with-Deep-Learning/results/hate_type/weights_tensor.npy')
 weights_tensor = tf.constant(loaded_weights, dtype=tf.float32)
 
 # Load the second model
 try:
-  model_hate_type = load_model("/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5",
+  model_hate_type = load_model("/content/Anti-Hating-Filter-with-Deep-Learning/models/hate_type/model_hate_type.h5",
+                               custom_objects={"AttentionLayer": AttentionLayer},
                                custom_objects={"weighted_binary_crossentropy": weighted_binary_crossentropy(weights_tensor)},
                                compile=False)
   print(f"\033[92mModel 'model_hate_type.h5' loaded successfully\033[0m")
@@ -35,11 +36,11 @@ except Exception as e:
   print(f"\033[91mError loading model 'model_hate_type.h5': {e}\033[0m")
 
 # Load the optimal threshold for the first model
-with open('../results/binary_hate/best_threshold.json', 'r') as f:
+with open('/content/Anti-Hating-Filter-with-Deep-Learning/results/binary_hate/best_threshold.json', 'r') as f:
   best_threshold_binary_hate = json.load(f)["threshold"]
 
 # Load the optimal threshold for the first model
-with open('../models/tokenizer_param.json', 'r') as f:
+with open('/content/Anti-Hating-Filter-with-Deep-Learning/results/binary_hate/best_threshold.json', 'r') as f:
   max_len = json.load(f)["max_len"]
 
 try:

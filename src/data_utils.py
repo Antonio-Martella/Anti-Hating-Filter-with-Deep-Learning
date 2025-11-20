@@ -97,21 +97,25 @@ def tokenization_and_pudding(x_train, x_test, num_words: int = None, verbose = F
     # Determine the maximum length
     max_len = max(len(seq) for seq in train_sequences)
 
-    with open('../models/tokenizer_param.json', 'w') as f:
-      json.dump({"max_len": float(max_len)}, f, indent=4)
+    # Directroy
+    save_dir = f"../models/{folder}"
+
+    # Create directory if it does not exist
+    os.makedirs(save_dir, exist_ok=True)
+
+    # Save tokenizer parameters
+    with open(os.path.join(save_dir, f"tokenizer_param_{folder}.json"), "w") as f:
+        json.dump({"max_len": int(max_len)}, f, indent=4)
 
     # Apply padding
-    padded_train_sequences = pad_sequences(sequences = train_sequences, maxlen = max_len)
-    padded_test_sequences = pad_sequences(sequences = test_sequences, maxlen = max_len)
+    padded_train_sequences = pad_sequences(sequences=train_sequences, maxlen=max_len)
+    padded_test_sequences = pad_sequences(sequences=test_sequences, maxlen=max_len)
 
     # Calculate vocabulary size
-    vocabulary_size = len(tokenizer.word_counts) + 1 # that + 1 is for padding
+    vocabulary_size = len(tokenizer.word_counts) + 1  # +1 for padding token
 
-    if verbose == True:
-      print(colored(f"Tokenization complete: {vocabulary_size} words in vocabulary, max_len={max_len}",'green'))
-    
     # Save the tokenizer
-    with open("../models/tokenizer.pkl", "wb") as f:
+    with open(os.path.join(save_dir, f"tokenizer_{folder}.pkl"), "wb") as f:
         pickle.dump(tokenizer, f)
       
     return padded_train_sequences, padded_test_sequences, max_len, vocabulary_size, tokenizer

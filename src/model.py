@@ -16,16 +16,16 @@ def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  
                                            factor = 0.5,          
-                                           patience = 3,         
+                                           patience = 2,         
                                            min_lr = 1e-6,        
                                            verbose = 0)           
 
   early_stop = EarlyStopping(monitor = 'val_loss',       
-                             patience = 7,                 
+                             patience = 5,                 
                              restore_best_weights = True,
                              verbose = 1)
 
-  checkpoint = ModelCheckpoint('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5',
+  checkpoint = ModelCheckpoint('/content/Anti-Hating-Filter-with-Deep-Learning/models/binary_hate/model_hate_binary.h5',
                                monitor = 'val_loss',
                                save_best_only = True,
                                save_weights_only = False,
@@ -39,16 +39,22 @@ def callback_hate_type():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
                                            factor = 0.5,           
-                                           patience = 2,            
+                                           patience = 3,            
                                            min_lr = 1e-6,           
                                            verbose = 0)            
 
   early_stop = EarlyStopping(monitor = 'val_loss',         
-                             patience = 5,               
+                             patience = 7,               
                              restore_best_weights = True,  
                              verbose = 1)
 
-  return early_stop, reduce_learning_rate
+  checkpoint = ModelCheckpoint(f'/content/Anti-Hating-Filter-with-Deep-Learning/models/hate_type/model_hate_type.h5',
+                               monitor = 'val_loss',
+                               save_best_only = True,
+                               save_weights_only = False,
+                               verbose = 1)
+
+  return early_stop, checkpoint, reduce_learning_rate
 
 
 # -----------------------------------
@@ -128,15 +134,15 @@ def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics)
 
   model = Sequential()
   model.add(Embedding(input_dim = vocabulary_size, 
-                      output_dim = 256, 
+                      output_dim = 128, 
                       input_length = max_len))
 
-  model.add(Bidirectional(LSTM(units = 256, return_sequences=True, activation = 'tanh')))
+  model.add(Bidirectional(LSTM(units = 64, return_sequences=True, activation = 'tanh')))
   model.add(AttentionLayer())
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
-  model.add(Dense(units = 128, activation = 'relu'))
+  model.add(Dense(units = 32, activation = 'relu'))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 
