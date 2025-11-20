@@ -134,13 +134,8 @@ evaluate_model(model_hate_binary,
                y_test_hate, 
                folder='binary_hate')
 
-
 model_hate_binary.evaluate(padded_test_hate_sequences,y_test_hate)
 
-y_pred = model_hate_binary.predict(padded_test_hate_sequences)
-
-for i in range(100):
-  print(y_pred[i], y_test_hate.iloc[i])
 
 # --------------------------------------------------------------
 # ----- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE -----

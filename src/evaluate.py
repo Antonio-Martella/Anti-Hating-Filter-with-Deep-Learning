@@ -35,7 +35,7 @@ def evaluation_class(count, folder = None):
   plt.ylabel('Count')
   plt.xticks(rotation=45, ha='right')
   plt.tight_layout()
-  plt.savefig(f"../results/{folder}/distribution_class.png")
+  plt.savefig(f"/content/Anti-Hating-Filter-with-Deep-Learning/results/{folder}/distribution_class.png")
   plt.close()
 
 
