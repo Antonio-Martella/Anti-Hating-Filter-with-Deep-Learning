@@ -35,25 +35,34 @@ def load_dataset(path: str = "../data/Filter_Toxic_Comments_dataset.csv") -> pd.
 
 def preprocess_text(df: pd.DataFrame, text_col: str = "comment_text") -> pd.DataFrame:
     """
-    Cleans and normalizes text in a DataFrame column.
+    Best-practice text preprocessing for hate speech / sentiment models.
 
     Operations:
-    - Convert all to lowercase
+    - Lowercasing
     - Remove URLs
     - Remove mentions (@user)
-    - Remove multiple spaces
+    - Remove HTML tags
+    - Remove non-alphanumeric EXCEPT punctuation useful for sentiment
+    - Replace multiple spaces
     """
-    def normalize(text):
+    def clean(text):
         if not isinstance(text, str):
             return ""
+        # Lowercase
         text = text.lower()
-        text = re.sub(r'http\S+|www\S+|https\S+', '', text, flags=re.MULTILINE)
+        # Remove URLs
+        text = re.sub(r'http\S+|www\S+|https\S+', '', text)
+        # Remove HTML tags
+        text = re.sub(r'<.*?>', '', text)
+        # Remove mentions (@username)
         text = re.sub(r'@\w+', '', text)
+        # Remove weird symbols but keep punctuation like ! ? . ,
+        text = re.sub(r"[^a-zA-Z0-9.,!?\'\"\s]", " ", text)
+        # Replace multiple spaces
         text = re.sub(r'\s+', ' ', text).strip()
         return text
-
-    df[text_col] = df[text_col].apply(normalize)
-    print(colored(f"Column '{text_col}' preprocessed successfully!",'green'))
+    df[text_col] = df[text_col].apply(clean)
+    print(colored(f"Column '{text_col}' preprocessed successfully", "green"))
     return df
 
 
