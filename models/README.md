@@ -8,7 +8,7 @@ This model determines whether a given comment should be classified as hate speec
 You can download the pretrained weights here:
 [Google Drive –` model_hate_binary.h5`](https://drive.google.com/file/d/1SdJGPULlTyfMU8klkSIqE-J78murGaWq/view?usp=drive_link)
 
-Place the downloaded file inside the /models directory (this folder).
+Place the downloaded file inside the `/models/binary_hate directory`.
 
 ## 2. Hate Type Multi-Label Classifier
 If a comment is classified as hateful by the first model, this second model identifies which of the six hate categories it belongs to.
