@@ -37,24 +37,44 @@ def load_dataset(path: str = "data/Filter_Toxic_Comments_dataset.csv") -> pd.Dat
 #------------------------------------------------------------------
 
 
-def split_dataset_binary(df, test_size=0.2, stratify=True):
-    df['has_hate'] = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']].any(axis=1).astype(int)
+def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
 
-    X_binary_hate = df.comment_text.values
-    y_binary_hate = df['has_hate'].values
+    df['has_hate'] = (df['sum_injurious'] > 0).astype(int)
 
-    # EVALUTATE CLASS DISTRIBUTIONS
-    class_counts = pd.Series(y_binary_hate).value_counts().sort_index()
+    class_counts = df['has_hate'].value_counts().sort_index()
     evaluation_class(count=class_counts, folder='binary_hate')
 
-    X_train_hate, X_test_hate, y_train_hate, y_test_hate = train_test_split(
-        X_binary_hate,
-        y_binary_hate,
+    train_df, test_df = train_test_split(
+        df,
         test_size=test_size,
         random_state=1,
-        stratify=y_binary_hate,
+        stratify=df['has_hate'] if stratify else None,
         shuffle=True
     )
+
+    os.makedirs('data/binary_hate', exist_ok=True)
+    train_df.to_csv("data/binary_hate/train_binary_hate.csv", index=False)
+    test_df.to_csv("data/binary_hate/test_binary_hate.csv", index=False)
+
+    if augmentation:
+        augmented_rows = []
+        for _, row in train_df.iterrows():
+            s = int(row['sum_injurious'])
+            if s <= 1:
+                repeat_n = 1
+            else:
+                repeat_n = s 
+            for _ in range(repeat_n):
+                augmented_rows.append(row.copy())
+        train_aug = pd.DataFrame(augmented_rows)
+        train_aug = train_aug.sample(frac=1, random_state=1).reset_index(drop=True)
+    else:
+        train_aug = train_df.copy()
+
+
+    return train_aug, test_df
+
+
 
     # Creating DataFrames while keeping all the original columns
     train_binary_hate = df.loc[df.index.isin(X_train_hate), :]  

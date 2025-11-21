@@ -27,11 +27,11 @@ import numpy as np
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-os.environ["TF_DETERMINISTIC_OPS"] = '1'
-os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
-os.environ["OMP_NUM_THREADS"] = '1'
-os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
-os.environ["TF_NUM_INTEROP_THREADS"] = '1'
+os.environ["TF_DETERMINISTIC_OPS"] = '0'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '0'
+os.environ["OMP_NUM_THREADS"] = '0'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '0'
+os.environ["TF_NUM_INTEROP_THREADS"] = '0'
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -64,7 +64,7 @@ from tensorflow.keras.models import load_model, Sequential
 
 
 # FROM MY FILES
-from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom
+from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom, split_dataset_binary
 from model import binary_hate_model, callback_binary_hate, class_weights_hate, compute_class_weights, weighted_binary_crossentropy, \
                   hate_type_model, callback_hate_type
 from evaluate import evaluation_class, evaluate_model
