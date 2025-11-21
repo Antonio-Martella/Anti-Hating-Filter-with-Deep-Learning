@@ -11,7 +11,7 @@ import json
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-def load_dataset(path: str = "/content/Anti-Hating-Filter-with-Deep-Learning/data/Filter_Toxic_Comments_dataset.csv") -> pd.DataFrame:
+def load_dataset(path: str = "data/Filter_Toxic_Comments_dataset.csv") -> pd.DataFrame:
     """
     Loads the dataset and returns a pandas DataFrame.
     Checks that the file exists and is readable.
@@ -98,7 +98,7 @@ def tokenization_and_pudding(x_train, x_test, num_words: int = None, verbose = F
     max_len = max(len(seq) for seq in train_sequences)
 
     # Directroy
-    save_dir = f"/content/Anti-Hating-Filter-with-Deep-Learning/models/{folder}"
+    save_dir = f"/models/{folder}"
 
     # Create directory if it does not exist
     os.makedirs(save_dir, exist_ok=True)

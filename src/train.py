@@ -114,7 +114,7 @@ model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                                  tf.keras.metrics.Recall(name = 'recall')])
 
 # LOG FILE .csv
-csv_logger_binary_hate = CSVLoggerCustom('/content/Anti-Hating-Filter-with-Deep-Learning/results/binary_hate/log_training_model_binary_hate.csv', verbose = True)
+csv_logger_binary_hate = CSVLoggerCustom('/results/binary_hate/log_training_model_binary_hate.csv', verbose = True)
 
 # FIT THE MODEL
 history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
@@ -164,7 +164,7 @@ padded_train_hate_type_sequences, padded_test_hate_type_sequences, max_len_hate_
 
 # CALCULATE THE WEIGHTS OF THE CLASSES
 weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.float32)
-np.save('/content/Anti-Hating-Filter-with-Deep-Learning/results/hate_type/weights_tensor.npy', weights_tensor.numpy())
+np.save('/results/hate_type/weights_tensor.npy', weights_tensor.numpy())
 
 model_hate_type = hate_type_model(vocabulary_size = vocabulary_hate_type_size,
                                   max_len = max_len_hate_type,
@@ -176,7 +176,7 @@ model_hate_type = hate_type_model(vocabulary_size = vocabulary_hate_type_size,
                                              tf.keras.metrics.Precision(name = 'precision'),
                                              tf.keras.metrics.Recall(name = 'recall')])
 
-csv_logger_hate_type = CSVLoggerCustom('/content/Anti-Hating-Filter-with-Deep-Learning/results/hate_type/log_training_model_hate_type.csv', verbose = True)
+csv_logger_hate_type = CSVLoggerCustom('/results/hate_type/log_training_model_hate_type.csv', verbose = True)
 
 history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         y_train_hate_type,
