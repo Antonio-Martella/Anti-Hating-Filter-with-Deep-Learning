@@ -86,7 +86,6 @@ def tokenization_and_pudding(x_train, x_test, num_words: int = None, verbose = F
     tokenizer (Tokenizer): Trained tokenizer object.
     """
 
-    # Create and train the tokenizer
     tokenizer = Tokenizer(num_words=num_words)
     tokenizer.fit_on_texts(x_train)
 
