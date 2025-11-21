@@ -37,7 +37,7 @@ def load_dataset(path: str = "data/Filter_Toxic_Comments_dataset.csv") -> pd.Dat
 #------------------------------------------------------------------
 
 
-def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
+def split_dataset_binary(df, test_size=0.2, val_size = 0.2, stratify=True, augmentation=False):
 
     df['has_hate'] = (df['sum_injurious'] > 0).astype(int)
 
@@ -52,9 +52,18 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
         shuffle=True
     )
 
+    train_df, val_df = train_test_split(
+        train_df,
+        test_size=test_size,
+        random_state=1,
+        stratify=train_df['has_hate'] if stratify else None,
+        shuffle=True
+    )
+
     os.makedirs('data/binary_hate', exist_ok=True)
     train_df.to_csv("data/binary_hate/train_binary_hate.csv", index=False)
     test_df.to_csv("data/binary_hate/test_binary_hate.csv", index=False)
+    val_df.to_csv("data/binary_hate/val_binary_hate.csv", index=False)
 
     if augmentation:
         augmented_rows = []
@@ -71,26 +80,7 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
     else:
         train_aug = train_df.copy()
 
-
-    return train_aug, test_df
-
-
-
-    # Creating DataFrames while keeping all the original columns
-    train_binary_hate = df.loc[df.index.isin(X_train_hate), :]  
-    test_binary_hate = df.loc[df.index.isin(X_test_hate), :]
-
-    # Save to file
-    os.makedirs('data/binary_hate', exist_ok=True)
-    train_binary_hate.to_csv("data/binary_hate/train_binary_hate.csv", index=False)
-    test_binary_hate.to_csv("data/binary_hate/test_binary_hate.csv", index=False)
-
-    return X_train_hate, y_train_hate, X_test_hate, y_test_hate
-
-
-
-
-
+    return train_aug, test_df, val_df
 
 
 #------------------------------------------------------------------
@@ -132,13 +122,13 @@ def preprocess_text(df: pd.DataFrame, text_col: str = "comment_text") -> pd.Data
 #------------------------------------------------------------------
 
 
-def tokenization_and_pudding(x_train, x_test, num_words: int = None, verbose = False, folder = None):
+def tokenization_and_pudding(X_train, X_test, X_val, num_words: int = None, verbose = False, folder = None):
     """
     Performs tokenization and padding on training and test texts.
 
     Args:
-    x_train (list[str]): List of training texts.
-    x_test (list[str]): List of test texts.
+    X_train (list[str]): List of training texts.
+    X_test (list[str]): List of test texts.
     num_words (int, optional): Maximum number of words to keep in the vocabulary. If None, all are considered.
 
     Returns:
@@ -150,11 +140,12 @@ def tokenization_and_pudding(x_train, x_test, num_words: int = None, verbose = F
     """
 
     tokenizer = Tokenizer(num_words=num_words)
-    tokenizer.fit_on_texts(x_train)
+    tokenizer.fit_on_texts(X_train)
 
     # Converts texts to sequences of integers
-    train_sequences = tokenizer.texts_to_sequences(x_train)
-    test_sequences = tokenizer.texts_to_sequences(x_test)
+    train_sequences = tokenizer.texts_to_sequences(X_train)
+    test_sequences = tokenizer.texts_to_sequences(X_test)
+    val_sequences = tokenizer.texts_to_sequences(X_val)
 
     # Determine the maximum length
     max_len = max(len(seq) for seq in train_sequences)
@@ -172,6 +163,8 @@ def tokenization_and_pudding(x_train, x_test, num_words: int = None, verbose = F
     # Apply padding
     padded_train_sequences = pad_sequences(sequences=train_sequences, maxlen=max_len)
     padded_test_sequences = pad_sequences(sequences=test_sequences, maxlen=max_len)
+    padded_val_sequences = pad_sequences(sequences=val_sequences, maxlen=max_len)
+
 
     # Calculate vocabulary size
     vocabulary_size = len(tokenizer.word_counts) + 1  # +1 for padding token
@@ -180,7 +173,7 @@ def tokenization_and_pudding(x_train, x_test, num_words: int = None, verbose = F
     with open(os.path.join(save_dir, f"tokenizer_{folder}.pkl"), "wb") as f:
         pickle.dump(tokenizer, f)
       
-    return padded_train_sequences, padded_test_sequences, max_len, vocabulary_size, tokenizer
+    return padded_train_sequences, padded_test_sequences, padded_val_sequences, max_len, vocabulary_size, tokenizer
 
 
 #------------------------------------------------------------------

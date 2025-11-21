@@ -77,38 +77,31 @@ df = load_dataset()
 # ----- FIRST MODEL, BINARY CLASSIFICATION, HATING OR NOT HATING ----
 # -------------------------------------------------------------------
 # SPLIT AND SAVE THE DATASETS
-train_binary_hate, test_binary_hate = train_test_split(load_dataset(), test_size=0.2, random_state=1)
-
-os.makedirs('data/binary_hate', exist_ok=True)
-train_binary_hate.to_csv("data/binary_hate/train_binary_hate.csv", index=False)
-test_binary_hate.to_csv("data/binary_hate/test_binary_hate.csv", index=False)
+train_binary_hate, test_binary_hate, val_binary_hate = split_dataset_binary(df=df, test_size=0.2, val_size=0.2, augmentation=True)
 
 # TEXT PREPROCESSING 
 train_binary_hate = preprocess_text(train_binary_hate)
 test_binary_hate = preprocess_text(test_binary_hate)
+val_binary_hate = preprocess_text(val_binary_hate)
 
-
-train_binary_hate['has_hate'] = train_binary_hate[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']].any(axis = 1).astype(int)
-X_binary_hate = train_binary_hate.comment_text.values
-y_binary_hate = train_binary_hate.loc[:, 'has_hate']
+X_train_binary_hate = train_binary_hate.comment_text.values
+y_train_binary_hate = train_binary_hate.has_hate.values
+X_test_binary_hate = test_binary_hate.comment_text.values
+y_test_binary_hate = test_binary_hate.has_hate.values
+X_val_binary_hate = val_binary_hate.comment_text.values
+y_val_binary_hate = val_binary_hate.has_hate.values
 
 # EVALUTATE CLASS DISTRIBUTIONS
-class_counts = pd.Series(y_binary_hate).value_counts().sort_index()
+class_counts = pd.Series(y_train_binary_hate).value_counts().sort_index()
 evaluation_class(count = class_counts, folder = 'binary_hate')
 
-# SPLIT DATASET
-#x_train_hate, x_test_hate, \
-#  y_train_hate, y_test_hate = train_test_split(X_hate, 
-#                                               y_hate, 
-#                                               test_size = 0.2, 
-#                                               random_state = 1, 
-#                                               stratify = y_hate, 
-#                                               shuffle = True)
 
 # TOKENIATION AND PUDDING
-padded_train_hate_sequences, max_len_hate, vocabulary_hate_size, \
-  tokenizer_binary_hate = tokenization_and_pudding(x_train = X_binary_hate,
-                                                   folder = 'binary_hate')
+padded_train_hate_sequences, padded_test_hate_sequences, padded_val_hate_sequences, \
+  max_len_hate, vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pudding(X_train = X_train_binary_hate,
+                                                                                       X_test = X_test_binary_hate,
+                                                                                       X_val = X_val_binary_hate,
+                                                                                       folder = 'binary_hate')
 
 # INSTANTIATE THE MODEL AND HYPERPARAMETERS
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
@@ -126,11 +119,11 @@ csv_logger_binary_hate = CSVLoggerCustom('results/binary_hate/log_training_model
 
 # FIT THE MODEL
 history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
-                                            y_binary_hate,
+                                            y_train_binary_hate,
                                             epochs = 100,
-                                            validation_split = 0.2,
+                                            validation_data=(padded_val_hate_sequences, y_val_binary_hate),
                                             batch_size = 256,
-                                            class_weight = class_weights_hate(y_binary_hate),
+                                            class_weight = class_weights_hate(y_train_binary_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
