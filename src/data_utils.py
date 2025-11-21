@@ -10,6 +10,10 @@ import json
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from sklearn.model_selection import train_test_split
+
+from evaluate import evaluation_class
+
 
 def load_dataset(path: str = "data/Filter_Toxic_Comments_dataset.csv") -> pd.DataFrame:
     """
@@ -28,6 +32,45 @@ def load_dataset(path: str = "data/Filter_Toxic_Comments_dataset.csv") -> pd.Dat
         return df
     except Exception as e:
         raise RuntimeError(colored(f"Error loading dataset: {e}",'red'))
+
+
+#------------------------------------------------------------------
+
+
+def split_dataset_binary(df, test_size=0.2, stratify=True):
+    df['has_hate'] = df[['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']].any(axis=1).astype(int)
+
+    X_binary_hate = df.comment_text.values
+    y_binary_hate = df['has_hate'].values
+
+    # EVALUTATE CLASS DISTRIBUTIONS
+    class_counts = pd.Series(y_binary_hate).value_counts().sort_index()
+    evaluation_class(count=class_counts, folder='binary_hate')
+
+    X_train_hate, X_test_hate, y_train_hate, y_test_hate = train_test_split(
+        X_binary_hate,
+        y_binary_hate,
+        test_size=test_size,
+        random_state=1,
+        stratify=y_binary_hate,
+        shuffle=True
+    )
+
+    # Creating DataFrames while keeping all the original columns
+    train_binary_hate = df.loc[df.index.isin(X_train_hate), :]  
+    test_binary_hate = df.loc[df.index.isin(X_test_hate), :]
+
+    # Save to file
+    os.makedirs('data/binary_hate', exist_ok=True)
+    train_binary_hate.to_csv("data/binary_hate/train_binary_hate.csv", index=False)
+    test_binary_hate.to_csv("data/binary_hate/test_binary_hate.csv", index=False)
+
+    return X_train_hate, y_train_hate, X_test_hate, y_test_hate
+
+
+
+
+
 
 
 #------------------------------------------------------------------
