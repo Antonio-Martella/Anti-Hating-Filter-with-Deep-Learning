@@ -131,10 +131,10 @@ model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/D
 
 evaluate_model(model_hate_binary, 
                padded_test_hate_sequences, 
-               y_test_hate, 
+               y_test_binary_hate, 
                folder='binary_hate')
 
-model_hate_binary.evaluate(padded_test_hate_sequences,y_test_hate)
+model_hate_binary.evaluate(padded_test_hate_sequences, y_test_binary_hate)
 
 
 # --------------------------------------------------------------
