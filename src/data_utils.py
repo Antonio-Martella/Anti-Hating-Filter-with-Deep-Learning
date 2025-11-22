@@ -90,7 +90,7 @@ def split_dataset_binary(df, test_size=0.2, val_size = 0.2, stratify=True, augme
 
 def split_dataset_type(df, test_size=0.2, val_size = 0.2, stratify=True, augmentation=False):
 
-    df['has_hate'] = (df['sum_injurious'] > 0).astype(int)
+    df = df[df["has_hate"] == 1]
 
     class_counts = df['has_hate'].value_counts().sort_index()
     evaluation_class(count=class_counts, folder='binary_hate')
