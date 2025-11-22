@@ -14,13 +14,13 @@ from layers.attention import AttentionLayer
 
 def callback_binary_hate():
 
-  reduce_learning_rate = ReduceLROnPlateau(monitor = ['val_loss', 'val_recall'],  
+  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',  
                                            factor = 0.8,          
                                            patience = 3,         
                                            min_lr = 1e-6,        
                                            verbose = 0)           
 
-  early_stop = EarlyStopping(monitor = ['val_loss', 'val_recall'],       
+  early_stop = EarlyStopping(monitor = 'val_loss',       
                              patience = 10,                 
                              restore_best_weights = True,
                              verbose = 1)
