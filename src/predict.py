@@ -61,10 +61,10 @@ except Exception as e:
   print("Errore nel caricamento del tokenizer:", e)
 
 
-df = pd.read_csv('data/test_comments.csv')
+df = pd.read_csv('data/binary_hate/test_binary_hate.csv')
 df = preprocess_text(df, text_col="comment_text")
 
-X = df.comment_text.values
+X = df[df["sum_injurious"] >= 1]
 
 X_sequences = tokenizer.texts_to_sequences(X)
 
@@ -72,5 +72,5 @@ padded_X_sequences = pad_sequences(sequences = X_sequences, maxlen = int(max_len
 
 y_pred = model_hate_binary.predict(padded_X_sequences)
 y_pred_opt = (y_pred >= best_threshold_binary_hate).astype(int).flatten()
-for i in range(len(X)):
-  print(i, y_pred[i], y_pred_opt[i])
+for i in range(50):
+  print(df.sum_injurious.values[i], y_pred_opt[i])

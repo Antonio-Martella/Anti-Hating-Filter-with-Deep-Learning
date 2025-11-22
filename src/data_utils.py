@@ -185,13 +185,14 @@ def tokenization_and_pudding(X_train, X_test, X_val, num_words: int = None, verb
     max_len = max(len(seq) for seq in train_sequences)
 
     # Directroy
-    save_dir = f"/models/{folder}"
+    save_dir = f"models/{folder}"
 
     # Create directory if it does not exist
     os.makedirs(save_dir, exist_ok=True)
 
     # Save tokenizer parameters
     with open(os.path.join(save_dir, f"tokenizer_param_{folder}.json"), "w") as f:
+        print("max_len: ", int(max_len))
         json.dump({"max_len": int(max_len)}, f, indent=4)
 
     # Apply padding
