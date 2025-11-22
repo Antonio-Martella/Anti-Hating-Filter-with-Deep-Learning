@@ -35,13 +35,13 @@ except Exception as e:
 
 # LOAD THE OPTIMAL THRESHOLD FOR THE MODEL AND THE LENGHT FOR THE TOKENIZER
 try:
-  with open('models/binary_hate/param_model_binary_hate_type.json', 'r') as f:
-    best_threshold_binary_hate = json.load(f)["best_threshold"]
-    max_len_bin_hate = json.load(f)["max_len"]
-  print(f"\033[92mThe best threshold and tokenizer length loaded successfully!\033[0m")
+    with open('models/binary_hate/param_model_binary_hate.json', 'r') as f:
+        params = json.load(f)  
+        max_len_bin_hate = params["max_len"]
+        best_threshold_binary_hate = params["best_threshold"]
+    print(f"\033[92mThe best threshold and tokenizer length loaded successfully!\033[0m")
 except Exception as e:
-  print(f"\033[91mError loading best threshold of first model: {e}!\033[0m")
-
+    print(f"\033[91mError loading best threshold and tokenizer length of first model: {e}!\033[0m")
 
 # ------------------------------
 # -------- SECOND MODEL --------
