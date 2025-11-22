@@ -191,7 +191,7 @@ def tokenization_and_pudding(X_train, X_test, X_val, num_words: int = None, verb
     os.makedirs(save_dir, exist_ok=True)
 
     # Save tokenizer parameters
-    with open(os.path.join(save_dir, f"tokenizer_param_{folder}.json"), "w") as f:
+    with open(os.path.join(save_dir, f"param_model_{folder}.json"), "w") as f:
         print("max_len: ", int(max_len))
         json.dump({"max_len": int(max_len)}, f, indent=4)
 

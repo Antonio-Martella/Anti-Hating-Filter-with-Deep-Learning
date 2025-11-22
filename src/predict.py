@@ -12,18 +12,40 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from layers.attention import AttentionLayer
 
 
-# Load the first model
+# -----------------------------
+# -------- FIRST MODEL --------
+# -----------------------------
+# LOAD THE MODEL
+print("\033[92m------ First Model ------\033[0m")
 try:
-  model_hate_binary = load_model(
-    #'/models/binary_hate/model_hate_binary.h5',
+  model_hate_binary = load_model(#'/models/binary_hate/model_hate_binary.h5',
     '/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5',
-    custom_objects={
-      "AttentionLayer": AttentionLayer
-      }
-    )
-  print(f"\033[92mModel 'model_hate_binary.h5' loaded successfully\033[0m")
+    custom_objects={"AttentionLayer": AttentionLayer})
+  print(f"\033[92mFirst Model (model_hate_binary.h5) loaded successfully!\033[0m")
 except Exception as e:
-  print(f"\033[91mError loading model 'model_hate_binary.h5': {e}\033[0m")
+  print(f"\033[91mError loading First Model (model_hate_binary.h5): {e}!\033[0m")
+
+# LOAD THE TOKENIZER 
+try:
+  with open("models/binary_hate/tokenizer_binary_hate.pkl", "rb") as f:
+      tokenizer_binary_hate = pickle.load(f)
+  print(f"\033[92mTokenizer for model_hate_binary loaded successfully!\033[0m")
+except Exception as e:
+  print(f"\033[91mError loading tokenizer of first model: {e}!\033[0m")
+
+# LOAD THE OPTIMAL THRESHOLD FOR THE MODEL
+try:
+  with open('results/binary_hate/best_threshold.json', 'r') as f:
+    best_threshold_binary_hate = json.load(f)["threshold"]
+  print(f"\033[92mBest threshold loaded successfully!\033[0m")
+except Exception as e:
+  print(f"\033[91mError loading best threshold of first model: {e}!\033[0m")
+
+
+with open('models/binary_hate/tokenizer_param_binary_hate.json', 'r') as f:
+  max_len_bin_hate = json.load(f)["max_len"]
+#except Exception as e:
+#  print(f"\033[91mError loading tokenizer of first model: {e}!\033[0m")
 
 
 # LOAD THE TENSOR WEIGHTS FOR THE 'model_hate_type'
@@ -51,12 +73,12 @@ with open('results/binary_hate/best_threshold.json', 'r') as f:
 
 # Load the optimal threshold for the first model
 with open('models/binary_hate/tokenizer_param_binary_hate.json', 'r') as f:
-  max_len = json.load(f)["max_len"]
+  max_len_bin_hate = json.load(f)["max_len"]
 
 # Load the tokenizer for the first model
 try:
   with open("models/binary_hate/tokenizer_binary_hate.pkl", "rb") as f:
-      tokenizer = pickle.load(f)
+      tokenizer_binary_hate = pickle.load(f)
 except Exception as e:
   print("Errore nel caricamento del tokenizer:", e)
 
@@ -65,12 +87,18 @@ df = pd.read_csv('data/binary_hate/test_binary_hate.csv')
 df = preprocess_text(df, text_col="comment_text")
 
 X = df[df["sum_injurious"] >= 1]
+print(len(X))
 
-X_sequences = tokenizer.texts_to_sequences(X)
+# CORRETTO: passa solo la colonna dei testi
+X_sequences = tokenizer_binary_hate.texts_to_sequences(X["comment_text"].astype(str))
 
-padded_X_sequences = pad_sequences(sequences = X_sequences, maxlen = int(max_len))
+padded_X_sequences = pad_sequences(
+    sequences=X_sequences,
+    maxlen=int(max_len_bin_hate)
+)
 
 y_pred = model_hate_binary.predict(padded_X_sequences)
 y_pred_opt = (y_pred >= best_threshold_binary_hate).astype(int).flatten()
+
 for i in range(50):
-  print(df.sum_injurious.values[i], y_pred_opt[i])
+    print(X.sum_injurious.values[i], y_pred_opt[i])

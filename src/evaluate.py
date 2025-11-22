@@ -42,13 +42,13 @@ def evaluation_class(count, folder = None):
 # ---------------------------------------------------------------
 
 
-def f1_score_optimization(y_true, y_pred):
+def f1_score_optimization(y_true, y_pred, folder = None):
   precision, recall, thresholds = precision_recall_curve(y_true, y_pred)
   f1_scores = (2 * precision[:-1] * recall[:-1]) / (precision[:-1] + recall[:-1])
   f1_scores[np.isnan(f1_scores)] = 0  
   optimal_threshold = thresholds[np.argmax(f1_scores)]
-  with open('results/binary_hate/best_threshold.json', 'w') as f:
-    json.dump({"threshold": float(optimal_threshold)}, f, indent=4)
+  with open(f'models/{folder}/param_model_{folder}.json', 'w') as f:
+    json.dump({"best_threshold": float(optimal_threshold)}, f, indent=4)
   return optimal_threshold
 
 
@@ -75,7 +75,7 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   - confusion_matrix.png : confusion matrix saved as an image
   ''' 
   y_pred = model.predict(X_test)
-  optimal_threshold = f1_score_optimization(y_test, y_pred)
+  optimal_threshold = f1_score_optimization(y_test, y_pred, folder)
   print(optimal_threshold)
 
   y_pred_opt = (y_pred >= optimal_threshold).astype(int).flatten()
@@ -85,11 +85,6 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   recall_opt = recall_score(y_test, y_pred_opt, zero_division=0)
   f1_opt = f1_score(y_test, y_pred_opt, zero_division=0)
 
-  print("\n\033[92mRisultati del modello binario sul set di test con threshold ottimale:\033[0m")
-  print(f"\033[92mAccuracy: {accuracy_opt:.3f}\033[0m")
-  print(f"\033[92mPrecision: {precision_opt:.3f}\033[0m")
-  print(f"\033[92mRecall: {recall_opt:.3f}\033[0m")
-  print(f"\033[92mF1-Score: {f1_opt:.3f}\033[0m")
 
   report = classification_report(y_test, y_pred_opt, output_dict=True)
   report_df = pd.DataFrame(report).transpose()
