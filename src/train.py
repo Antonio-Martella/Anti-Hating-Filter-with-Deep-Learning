@@ -64,7 +64,7 @@ from tensorflow.keras.models import load_model, Sequential
 
 
 # FROM MY FILES
-from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom, split_dataset_binary, split_dataset_hate_type
+from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom, split_dataset_binary, split_dataset_hate_type, F1Score
 from model import binary_hate_model, callback_binary_hate, class_weights_hate, compute_class_weights, weighted_binary_crossentropy, \
                   hate_type_model, callback_hate_type
 from evaluate import evaluation_class, evaluate_model
@@ -110,7 +110,8 @@ model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
                                                  tf.keras.metrics.Precision(name = 'precision'),
-                                                 tf.keras.metrics.Recall(name = 'recall')])
+                                                 tf.keras.metrics.Recall(name = 'recall'),
+                                                 F1Score(name='f1')])
 
 # LOG FILE .csv
 csv_logger_binary_hate = CSVLoggerCustom('results/binary_hate/log_training_model_binary_hate.csv', verbose = True)

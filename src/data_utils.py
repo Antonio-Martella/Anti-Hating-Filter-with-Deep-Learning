@@ -14,6 +14,8 @@ from sklearn.model_selection import train_test_split
 
 from evaluate import evaluation_class
 
+from utils.param_utils import save_param
+
 
 def load_dataset(path: str = "data/Filter_Toxic_Comments_dataset.csv") -> pd.DataFrame:
     """
@@ -191,9 +193,7 @@ def tokenization_and_pudding(X_train, X_test, X_val, num_words: int = None, verb
     os.makedirs(save_dir, exist_ok=True)
 
     # Save tokenizer parameters
-    with open(os.path.join(save_dir, f"param_model_{folder}.json"), "w") as f:
-        print("max_len: ", int(max_len))
-        json.dump({"max_len": int(max_len)}, f, indent=4)
+    save_param(f"models/{folder}/param_model_{folder}.json", "max_len", int(max_len))
 
     # Apply padding
     padded_train_sequences = pad_sequences(sequences=train_sequences, maxlen=max_len)
@@ -264,3 +264,24 @@ class CSVLoggerCustom(tf.keras.callbacks.Callback):
         self.file.close()
         if self.verbose == True:
             print(f"Training log saved in: {self.filename}")
+
+
+
+class F1Score(tf.keras.metrics.Metric):
+    def __init__(self, name='f1', **kwargs):
+        super(F1Score, self).__init__(name=name, **kwargs)
+        self.precision = tf.keras.metrics.Precision()
+        self.recall = tf.keras.metrics.Recall()
+
+    def update_state(self, y_true, y_pred, sample_weight=None):
+        self.precision.update_state(y_true, y_pred, sample_weight)
+        self.recall.update_state(y_true, y_pred, sample_weight)
+
+    def result(self):
+        p = self.precision.result()
+        r = self.recall.result()
+        return 2 * (p * r) / (p + r + tf.keras.backend.epsilon())
+
+    def reset_states(self):
+        self.precision.reset_states()
+        self.recall.reset_states()

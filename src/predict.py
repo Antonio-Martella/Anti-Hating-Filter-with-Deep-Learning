@@ -33,24 +33,21 @@ try:
 except Exception as e:
   print(f"\033[91mError loading tokenizer of first model: {e}!\033[0m")
 
-# LOAD THE OPTIMAL THRESHOLD FOR THE MODEL
+# LOAD THE OPTIMAL THRESHOLD FOR THE MODEL AND THE LENGHT FOR THE TOKENIZER
 try:
-  with open('results/binary_hate/best_threshold.json', 'r') as f:
-    best_threshold_binary_hate = json.load(f)["threshold"]
-  print(f"\033[92mBest threshold loaded successfully!\033[0m")
+  with open('models/binary_hate/param_model_binary_hate_type.json', 'r') as f:
+    best_threshold_binary_hate = json.load(f)["best_threshold"]
+    max_len_bin_hate = json.load(f)["max_len"]
+  print(f"\033[92mThe best threshold and tokenizer length loaded successfully!\033[0m")
 except Exception as e:
   print(f"\033[91mError loading best threshold of first model: {e}!\033[0m")
 
 
-with open('models/binary_hate/tokenizer_param_binary_hate.json', 'r') as f:
-  max_len_bin_hate = json.load(f)["max_len"]
-#except Exception as e:
-#  print(f"\033[91mError loading tokenizer of first model: {e}!\033[0m")
-
-
-# LOAD THE TENSOR WEIGHTS FOR THE 'model_hate_type'
-loaded_weights = np.load('results/hate_type/weights_tensor.npy')
-weights_tensor = tf.constant(loaded_weights, dtype=tf.float32)
+# ------------------------------
+# -------- SECOND MODEL --------
+# ------------------------------
+# LOAD THE TENSOR WEIGHTS FOR THE 'model_hate_type'loaded_weights = np.load('results/hate_type/weights_tensor.npy')
+'''weights_tensor = tf.constant(loaded_weights, dtype=tf.float32)
 
 # Load the second model
 try:
@@ -80,7 +77,7 @@ try:
   with open("models/binary_hate/tokenizer_binary_hate.pkl", "rb") as f:
       tokenizer_binary_hate = pickle.load(f)
 except Exception as e:
-  print("Errore nel caricamento del tokenizer:", e)
+  print("Errore nel caricamento del tokenizer:", e)'''
 
 
 df = pd.read_csv('data/binary_hate/test_binary_hate.csv')

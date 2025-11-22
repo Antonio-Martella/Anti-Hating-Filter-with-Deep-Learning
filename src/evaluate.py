@@ -8,6 +8,7 @@ import json
 from sklearn.metrics import classification_report, confusion_matrix, precision_recall_curve, \
   accuracy_score, precision_score, recall_score, f1_score
 
+from utils.param_utils import save_param
 
 def evaluation_class(count, folder = None):
   '''
@@ -47,8 +48,9 @@ def f1_score_optimization(y_true, y_pred, folder = None):
   f1_scores = (2 * precision[:-1] * recall[:-1]) / (precision[:-1] + recall[:-1])
   f1_scores[np.isnan(f1_scores)] = 0  
   optimal_threshold = thresholds[np.argmax(f1_scores)]
-  with open(f'models/{folder}/param_model_{folder}.json', 'w') as f:
-    json.dump({"best_threshold": float(optimal_threshold)}, f, indent=4)
+  save_param(f"models/{folder}/param_model_{folder}.json",
+           "best_threshold",
+           float(optimal_threshold))
   return optimal_threshold
 
 
