@@ -92,14 +92,13 @@ def split_dataset_type(df, test_size=0.2, val_size = 0.2, stratify=True, augment
 
     df = df[df["has_hate"] == 1]
 
-    class_counts = df['has_hate'].value_counts().sort_index()
-    evaluation_class(count=class_counts, folder='binary_hate')
+    class_counts = df.loc[:, 'toxic':'identity_hate'].value_counts().sort_index()
+    evaluation_class(count=class_counts, folder='hate_type')
 
     train_df, test_df = train_test_split(
         df,
         test_size=test_size,
         random_state=1,
-        stratify=df['has_hate'] if stratify else None,
         shuffle=True
     )
 
@@ -107,14 +106,13 @@ def split_dataset_type(df, test_size=0.2, val_size = 0.2, stratify=True, augment
         train_df,
         test_size=test_size,
         random_state=1,
-        stratify=train_df['has_hate'] if stratify else None,
         shuffle=True
     )
 
-    os.makedirs('data/binary_hate', exist_ok=True)
-    (train_df.drop(columns='has_hate', errors="ignore").to_csv("data/binary_hate/train_binary_hate.csv", index=False))
-    (test_df.drop(columns='has_hate', errors="ignore").to_csv("data/binary_hate/test_binary_hate.csv", index=False))
-    (val_df.drop(columns='has_hate', errors="ignore").to_csv("data/binary_hate/val_binary_hate.csv", index=False))
+    os.makedirs('data/hate_type', exist_ok=True)
+    train_df.to_csv("data/hate_type/train_hate_type.csv", index=False)
+    test_df.to_csv("data/hate_type/test_hate_type.csv", index=False)
+    val_df.to_csv("data/hate_type/val_hate_type.csv", index=False)
 
     print(val_df.columns)
 
