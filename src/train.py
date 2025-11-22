@@ -64,7 +64,7 @@ from tensorflow.keras.models import load_model, Sequential
 
 
 # FROM MY FILES
-from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom, split_dataset_binary
+from data_utils import load_dataset, preprocess_text, tokenization_and_pudding, CSVLoggerCustom, split_dataset_binary, split_dataset_hate_type
 from model import binary_hate_model, callback_binary_hate, class_weights_hate, compute_class_weights, weighted_binary_crossentropy, \
                   hate_type_model, callback_hate_type
 from evaluate import evaluation_class, evaluate_model
@@ -84,17 +84,15 @@ train_binary_hate = preprocess_text(train_binary_hate)
 test_binary_hate = preprocess_text(test_binary_hate)
 val_binary_hate = preprocess_text(val_binary_hate)
 
+# TRAINING
 X_train_binary_hate = train_binary_hate.comment_text.values
 y_train_binary_hate = train_binary_hate.has_hate.values
+# TESTING
 X_test_binary_hate = test_binary_hate.comment_text.values
 y_test_binary_hate = test_binary_hate.has_hate.values
+# VALIDATION
 X_val_binary_hate = val_binary_hate.comment_text.values
 y_val_binary_hate = val_binary_hate.has_hate.values
-
-# EVALUTATE CLASS DISTRIBUTIONS
-class_counts = pd.Series(y_train_binary_hate).value_counts().sort_index()
-evaluation_class(count = class_counts, folder = 'binary_hate')
-
 
 # TOKENIATION AND PUDDING
 padded_train_hate_sequences, padded_test_hate_sequences, padded_val_hate_sequences, \
@@ -140,28 +138,31 @@ model_hate_binary.evaluate(padded_test_hate_sequences, y_test_binary_hate)
 # --------------------------------------------------------------
 # ----- SECOND MODEL, MULTILABEL CLASSIFICATION, TYPE HATE -----
 # --------------------------------------------------------------
-# SELECT COMMENTS WITH AT LEAST ONE TYPE OF HATE
-df_hate_type = df[df["has_hate"] == 1]
-x_hate_type = df_hate_type.comment_text.values
-y_hate_type = df_hate_type.loc[:, 'toxic':'identity_hate']
+# SPLIT AND SAVE THE DATASETS
+train_hate_type, test_hate_type, val_hate_type = split_dataset_hate_type(df=df, test_size=0.2, val_size=0.2)
 
-# EVALUTATE CLASS DISTRIBUTIONS
-class_counts = y_hate_type.sum().sort_values(ascending=False)
-evaluation_class(count = class_counts, folder = 'hate_type')
+# TEXT PREPROCESSING 
+train_hate_type = preprocess_text(train_hate_type)
+test_hate_type = preprocess_text(test_hate_type)
+val_hate_type = preprocess_text(val_hate_type)
 
-# SPLIT DATASET 
-x_train_hate_type, x_test_hate_type, \
-  y_train_hate_type, y_test_hate_type = train_test_split(x_hate_type,
-                                                         y_hate_type, 
-                                                         test_size = 0.2, 
-                                                         random_state = 1, 
-                                                         shuffle = True)
+# TRAINING
+X_train_hate_type = train_hate_type.comment_text.values
+y_train_hate_type = train_hate_type.loc[:, 'toxic':'identity_hate']
+# TESTING
+X_test_hate_type = test_hate_type.comment_text.values
+y_test_hate_type = test_hate_type.loc[:, 'toxic':'identity_hate']
+# VALIDATION
+X_val_hate_type = val_hate_type.comment_text.values
+y_val_hate_type = val_hate_type.loc[:, 'toxic':'identity_hate']
+
 
 # TOKENIATION AND PUDDING
-padded_train_hate_type_sequences, padded_test_hate_type_sequences, max_len_hate_type, vocabulary_hate_type_size, \
-  tokenizer_hate_type = tokenization_and_pudding(x_train = x_train_hate_type,
-                                                 x_test = x_test_hate_type,
-                                                 folder = 'hate_type')
+padded_train_hate_type_sequences, padded_test_hate_type_sequences, padded_val_hate_type_sequences,\
+ max_len_hate_type, vocabulary_hate_type_size, tokenizer_hate_type = tokenization_and_pudding(X_train = X_train_hate_type, 
+                                                                                              X_test = X_test_hate_type,
+                                                                                              X_val = X_val_hate_type,
+                                                                                              folder = 'hate_type')
 
 # CALCULATE THE WEIGHTS OF THE CLASSES
 weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.float32)
@@ -182,7 +183,7 @@ csv_logger_hate_type = CSVLoggerCustom('results/hate_type/log_training_model_hat
 history_hate_type = model_hate_type.fit(padded_train_hate_type_sequences,
                                         y_train_hate_type,
                                         epochs = 100,
-                                        validation_split = 0.2,
+                                        validation_data=(padded_val_hate_type_sequences, y_val_hate_type),
                                         batch_size = 64,
                                         callbacks = [callback_hate_type(), csv_logger_hate_type])
 
