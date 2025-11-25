@@ -21,7 +21,7 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
   )
 
 
-  path = '../data/binary_hate'
+  path = 'data/binary_hate'
   os.makedirs(path, exist_ok=True)
   (train_df.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/train_binary_hate.csv", index=False))
   (test_df.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/test_binary_hate.csv", index=False))
@@ -69,7 +69,7 @@ def split_dataset_hate_type(df, test_size=0.2, val_size = 0.2):
     shuffle=True
   )
     
-  path = '../data/hate_type'
+  path = 'data/hate_type'
   os.makedirs(path, exist_ok=True)
   train_df.to_csv(f"{path}/train_hate_type.csv", index=False)
   test_df.to_csv(f"{path}/test_hate_type.csv", index=False)

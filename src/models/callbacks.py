@@ -16,7 +16,7 @@ def callback_binary_hate():
                              verbose = 1,
                              mode='max')
 
-  checkpoint = ModelCheckpoint('models/binary_hate/model_hate_binary.h5',
+  checkpoint = ModelCheckpoint('models/binary_hate/model_hate_binary.keras',
                                monitor = 'val_f1',
                                save_best_only = True,
                                save_weights_only = False,
