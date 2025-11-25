@@ -27,7 +27,9 @@ tf.random.set_seed(SEED)
 # ---------------------------------------
 # LIBRARY 
 # ---------------------------------------
-from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, split_dataset_hate_type
+from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, split_dataset_hate_type, \
+  CSVLoggerCustom, F1Score
+from models import binary_hate_model, callback_binary_hate, class_weights_hate
 
 
 # LOADING AND PREPROCESSING OF THE TEXT CORPUS
@@ -58,7 +60,7 @@ padded_train_hate_sequences, padded_test_hate_sequences, padded_val_hate_sequenc
                                                                                        X_val = X_val_binary_hate,
                                                                                        folder = 'binary_hate')
 
-'''# INSTANTIATE THE MODEL AND HYPERPARAMETERS
+# INSTANTIATE THE MODEL AND HYPERPARAMETERS
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
                                       dropout = 0.3,
@@ -71,7 +73,7 @@ model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                                  F1Score(name='f1')])
 
 # LOG FILE .csv
-csv_logger_binary_hate = CSVLoggerCustom('results/binary_hate/log_training_model_binary_hate.csv', verbose = True)
+csv_logger_binary_hate = CSVLoggerCustom('results/binary_hate/log_training_model_binary_hate.csv', verbose=True)
 
 # FIT THE MODEL
 history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
@@ -84,10 +86,11 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
+model_hate_binary.save('models/binary_hate/model_hate_binary.h5')
 
-evaluate_model(model_hate_binary, 
-               padded_test_hate_sequences, 
-               y_test_binary_hate, 
-               folder='binary_hate')
+#evaluate_model(model_hate_binary, 
+#               padded_test_hate_sequences, 
+#               y_test_binary_hate, 
+#               folder='binary_hate')
 
-model_hate_binary.evaluate(padded_test_hate_sequences, y_test_binary_hate)'''
+#model_hate_binary.evaluate(padded_test_hate_sequences, y_test_binary_hate)
