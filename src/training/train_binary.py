@@ -1,11 +1,16 @@
 import random
 import numpy as np
 import tensorflow as tf
-import pandas as pd
+import pandas as pdx
 import os
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, split_dataset_hate_type, \
+  CSVLoggerCustom, F1Score
+from models import binary_hate_model, callback_binary_hate, class_weights_hate
+
 
 # ---------------------------------------
 # REPRODUCIBILITY 
@@ -24,13 +29,7 @@ random.seed(SEED)
 np.random.seed(SEED)
 tf.random.set_seed(SEED)
 
-# ---------------------------------------
-# LIBRARY 
-# ---------------------------------------
-from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, split_dataset_hate_type, \
-  CSVLoggerCustom, F1Score
-from models import binary_hate_model, callback_binary_hate, class_weights_hate
-
+# -----------------------------------
 
 # LOADING AND PREPROCESSING OF THE TEXT CORPUS
 df = load_dataset()
@@ -86,7 +85,7 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
-model_hate_binary.save('models/binary_hate/model_hate_binary.h5')
+#model_hate_binary.save('models/binary_hate/model_hate_binary.h5')
 
 #evaluate_model(model_hate_binary, 
 #               padded_test_hate_sequences, 

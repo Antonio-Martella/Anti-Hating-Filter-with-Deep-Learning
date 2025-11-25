@@ -5,13 +5,13 @@ def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_f1',  
                                            factor = 0.8,          
-                                           patience = 3,         
+                                           patience = 2,         
                                            min_lr = 1e-6,        
                                            verbose = 0,
                                            mode='max')           
 
   early_stop = EarlyStopping(monitor = 'val_f1',       
-                             patience = 10,                 
+                             patience = 5,                 
                              restore_best_weights = True,
                              verbose = 1,
                              mode='max')

@@ -1,6 +1,6 @@
 from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization
 from tensorflow.keras.models import Sequential
-from attention_layer import AttentionLayer
+from .attention_layer import AttentionLayer
 
 
 def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics):
@@ -18,7 +18,8 @@ def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metric
   model.add(Dense(16, activation='relu'))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
-
+  
+  #
   model.add(Dense(units = 1, activation = 'sigmoid'))
   model.build(input_shape = (None, max_len))
 
