@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 from evaluate import evaluation_class
 
 
-def split_dataset_binary(df, test_size=0.2, val_size = 0.2, stratify=True, augmentation=False):
+def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
 
   df = df.copy()
   df['has_hate'] = (df['sum_injurious'] > 0).astype(int)
@@ -14,25 +14,17 @@ def split_dataset_binary(df, test_size=0.2, val_size = 0.2, stratify=True, augme
 
   train_df, test_df = train_test_split(
     df,
-    test_size=test_size,
-    random_state=1,
-    stratify=df['has_hate'] if stratify else None,
-    shuffle=True
+    test_size = test_size,
+    random_state = 1,
+    stratify = df['has_hate'] if stratify else None,
+    shuffle = True
   )
 
-  train_df, val_df = train_test_split(
-    train_df,
-    test_size=test_size,
-    random_state=1,
-    stratify=train_df['has_hate'] if stratify else None,
-    shuffle=True
-  )
 
   path = '../data/binary_hate'
   os.makedirs(path, exist_ok=True)
   (train_df.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/train_binary_hate.csv", index=False))
   (test_df.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/test_binary_hate.csv", index=False))
-  (val_df.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/val_binary_hate.csv", index=False))
 
   if augmentation:
     augmented_rows = []
@@ -49,7 +41,7 @@ def split_dataset_binary(df, test_size=0.2, val_size = 0.2, stratify=True, augme
   else:
       train_aug = train_df.copy()
 
-  return train_aug, test_df, val_df
+  return train_aug, test_df
 
 
 #------------------------------------------------------------------

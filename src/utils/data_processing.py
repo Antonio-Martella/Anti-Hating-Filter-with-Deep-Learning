@@ -48,7 +48,7 @@ def preprocess_text(df: pd.DataFrame, text_col: str = "comment_text", verbose = 
 # ---------------------------------------------------
 
 
-def tokenization_and_pad(X_train, X_test, X_val, num_words: int = None, verbose = False, folder = None):
+def tokenization_and_pad(X_train, X_test, num_words: int = None, verbose = False, folder = None):
     """
     Performs tokenization and padding on training and test texts.
 
@@ -71,7 +71,6 @@ def tokenization_and_pad(X_train, X_test, X_val, num_words: int = None, verbose 
     # Converts texts to sequences of integers
     train_sequences = tokenizer.texts_to_sequences(X_train)
     test_sequences = tokenizer.texts_to_sequences(X_test)
-    val_sequences = tokenizer.texts_to_sequences(X_val)
 
     # Determine the maximum length
     max_len = max(len(seq) for seq in train_sequences)
@@ -88,7 +87,6 @@ def tokenization_and_pad(X_train, X_test, X_val, num_words: int = None, verbose 
     # Apply padding
     padded_train_sequences = pad_sequences(sequences=train_sequences, maxlen=max_len)
     padded_test_sequences = pad_sequences(sequences=test_sequences, maxlen=max_len)
-    padded_val_sequences = pad_sequences(sequences=val_sequences, maxlen=max_len)
 
     # Calculate vocabulary size
     vocabulary_size = len(tokenizer.word_counts) + 1  # +1 for padding token
@@ -97,7 +95,7 @@ def tokenization_and_pad(X_train, X_test, X_val, num_words: int = None, verbose 
     with open(os.path.join(save_dir, f"tokenizer_{folder}.pkl"), "wb") as f:
         pickle.dump(tokenizer, f)
       
-    return padded_train_sequences, padded_test_sequences, padded_val_sequences, max_len, vocabulary_size, tokenizer
+    return padded_train_sequences, padded_test_sequences, max_len, vocabulary_size, tokenizer
 
 
 
