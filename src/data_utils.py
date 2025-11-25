@@ -175,7 +175,7 @@ def tokenization_and_pudding(X_train, X_test, X_val, num_words: int = None, verb
     tokenizer (Tokenizer): Trained tokenizer object.
     """
 
-    tokenizer = Tokenizer(num_words=num_words)
+    tokenizer = Tokenizer(num_words=num_words, oov_token="<OOV>")
     tokenizer.fit_on_texts(X_train)
 
     # Converts texts to sequences of integers
