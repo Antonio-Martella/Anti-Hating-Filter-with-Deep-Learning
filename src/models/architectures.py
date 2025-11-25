@@ -1,4 +1,4 @@
-from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization, GlobalMaxPooling1D, Layer
+from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization
 from tensorflow.keras.models import Sequential
 from attention_layer import AttentionLayer
 
