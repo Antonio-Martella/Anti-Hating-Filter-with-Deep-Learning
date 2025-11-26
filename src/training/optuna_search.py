@@ -68,7 +68,7 @@ def objective(trial):
     lstm_units = trial.suggest_categorical("lstm_units", [16, 32, 64, 128])
     dense_units = trial.suggest_categorical("dense_units", [8, 16, 32, 64])
     embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2, log=True)
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
     batch_size = trial.suggest_categorical("batch_size", [128, 256, 512])
 
     # ----------------------
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     )
 
     print("Starting hyperparameter search...")
-    study.optimize(objective, n_trials=7)
+    study.optimize(objective, n_trials=5)
 
     print("\n───────────────────────────────────────────────")
     print(" BEST HYPERPARAMETERS FOUND ")
@@ -154,7 +154,6 @@ if __name__ == "__main__":
     print(f"Best F1 Score: {study.best_value:.4f}")
 
     # Salva best params
-    with open("result/binary_hate/best_hyperparams_binary_hate.json", "w") as f:
-        json.dump(study.best_params, f, indent=4)
-        json.dump({"best_f1": study.best_value}, f, indent=4)
+    with open("results/binary_hate/best_hyperparams_binary_hate.json", "w") as f:
+      json.dump({**study.best_params, "best_f1": study.best_value}, f, indent=4)
 
