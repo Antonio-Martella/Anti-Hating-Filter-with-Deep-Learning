@@ -5,8 +5,12 @@ import os
 import math
 import sys
 import json
+import random
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
+from models import class_weights_hate
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -44,6 +48,7 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
   vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pad(X_train = X_train_binary_hate,
                                                                      X_test = X_test_binary_hate,
                                                                      folder = 'binary_hate')
+print(max_len_hate)
 
 # tokenizzazione & padding
 #tokenizer, padded_sequences, vocabulary_size, max_len = tokenization_and_pad(
@@ -69,29 +74,27 @@ def objective(trial):
     dense_units = trial.suggest_categorical("dense_units", [8, 16, 32, 64])
     embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
     learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [128, 256, 512])
+    batch_size = trial.suggest_categorical("batch_size", [256, 512])
 
     # ----------------------
     # MODELLO
     # ----------------------
     optimizer = tf.keras.optimizers.AdamW(learning_rate=learning_rate)
 
-    # Costruisci modello con iperparametri
-    model = binary_hate_model(
-        vocabulary_size=vocabulary_hate_size,
-        max_len=max_len_hate,
-        dropout=dropout,
-        optimizer=optimizer,
-        loss="binary_crossentropy",
-        metrics=[
-            "accuracy",
-            tf.keras.metrics.Precision(name="precision"),
-            tf.keras.metrics.Recall(name="recall"),
-            F1Score(name="f1"),
-        ],
-        lstm_units=lstm_units,        # AGGIUNTA IMPORTANTE
-        embedding_dim = embedding_dim,
-        dense_units=dense_units       # AGGIUNTA IMPORTANTE
+    model = binary_hate_model(vocabulary_size = vocabulary_hate_size,
+                              max_len = max_len_hate,
+                              dropout = dropout,
+                              optimizer=optimizer,
+                              loss="binary_crossentropy",
+                              metrics = [
+                                'accuracy',
+                                tf.keras.metrics.Precision(name = 'precision'),
+                                tf.keras.metrics.Recall(name = 'recall'),
+                                F1Score(name='f1')
+                                ],
+                              lstm_units = lstm_units,
+                              embedding_dim = embedding_dim,
+                              dense_units = dense_units,
     )
 
     # ----------------------
@@ -107,7 +110,7 @@ def objective(trial):
 
     reduce_lr = ReduceLROnPlateau(
         monitor="val_f1",
-        factor=0.7,
+        factor=0.8,
         patience=2,
         min_lr=1e-6,
         mode="max",
@@ -121,10 +124,10 @@ def objective(trial):
         padded_train_hate_sequences,
         y_train_binary_hate,
         validation_data=(padded_test_hate_sequences, y_test_binary_hate),
-        epochs=12,                   # breve training — abbastanza per capire i trends
+        epochs=12,                  
         batch_size=batch_size,
-        verbose=1,
-        callbacks=[early_stop, reduce_lr],
+        #class_weight = class_weights_hate(y_train_binary_hate),
+        callbacks=[early_stop, reduce_lr]
     )
 
     # ----------------------

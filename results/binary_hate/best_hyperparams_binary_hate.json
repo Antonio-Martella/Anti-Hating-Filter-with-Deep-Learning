@@ -1,9 +1,9 @@
 {
-    "dropout": 0.479736131053595,
-    "lstm_units": 64,
-    "dense_units": 8,
+    "dropout": 0.47203274208428814,
+    "lstm_units": 16,
+    "dense_units": 16,
     "embedding_dim": 64,
-    "learning_rate": 0.023764120770003713,
+    "learning_rate": 0.007958857718710383,
     "batch_size": 256,
-    "best_f1": 0.7820166945457458
+    "best_f1": 0.7926018238067627
 }

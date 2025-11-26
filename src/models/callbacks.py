@@ -11,9 +11,9 @@ def callback_binary_hate():
                                            mode='max')           
 
   early_stop = EarlyStopping(monitor = 'val_f1',       
-                             patience = 5,                 
+                             patience = 3,                 
                              restore_best_weights = True,
-                             verbose = 1,
+                             verbose = 0,
                              mode='max')
 
   checkpoint = ModelCheckpoint('models/binary_hate/model_hate_binary.keras',
