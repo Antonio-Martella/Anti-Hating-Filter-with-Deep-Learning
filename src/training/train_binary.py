@@ -4,6 +4,7 @@ import tensorflow as tf
 import pandas as pdx
 import os
 import sys
+import json
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -12,7 +13,7 @@ from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dat
 from models import binary_hate_model, callback_binary_hate, class_weights_hate
 
 
-# ---------------------------------------
+'''# ---------------------------------------
 # REPRODUCIBILITY 
 # ---------------------------------------
 
@@ -29,7 +30,7 @@ random.seed(SEED)
 np.random.seed(SEED)
 tf.random.set_seed(SEED)
 
-# -----------------------------------
+# -----------------------------------'''
 
 # LOADING AND PREPROCESSING OF THE TEXT CORPUS
 df = load_dataset()
@@ -56,11 +57,19 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
                                                                      X_test = X_test_binary_hate,
                                                                      folder = 'binary_hate')
 
+print(max_len_hate)
+
+with open('results/binary_hate/best_hyperparams_binary_hate.json', "r") as f:
+    best_hyperparams = json.load(f)
+
 # INSTANTIATE THE MODEL AND HYPERPARAMETERS
 model_hate_binary = binary_hate_model(vocabulary_size = vocabulary_hate_size,
                                       max_len = max_len_hate,
-                                      dropout = 0.3,
-                                      optimizer = tf.keras.optimizers.AdamW(learning_rate = 1e-3),
+                                      dropout = best_hyperparams['dropout'],
+                                      lstm_units = best_hyperparams['lstm_units'],
+                                      embedding_dim = best_hyperparams['embedding_dim'],
+                                      dense_units = best_hyperparams['dense_units'],
+                                      optimizer = tf.keras.optimizers.AdamW(learning_rate = best_hyperparams['learning_rate']),
                                       loss = 'binary_crossentropy',
                                       metrics = ['accuracy',
                                                  tf.keras.metrics.AUC(name = 'auc', multi_label=False),
@@ -75,9 +84,10 @@ csv_logger_binary_hate = CSVLoggerCustom('results/binary_hate/log_training_model
 history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_binary_hate,
                                             epochs = 100,
-                                            validation_split = 0.2,
-                                            batch_size = 256,
-                                            class_weight = class_weights_hate(y_train_binary_hate),
+                                            #validation_split = 0.2,
+                                            validation_data=(padded_test_hate_sequences, y_test_binary_hate),
+                                            batch_size = best_hyperparams['batch_size'],
+                                            #class_weight = class_weights_hate(y_train_binary_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
