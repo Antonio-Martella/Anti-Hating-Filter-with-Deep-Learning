@@ -67,7 +67,7 @@ def objective(trial):
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
     lstm_units = trial.suggest_categorical("lstm_units", [16, 32, 64, 128])
     dense_units = trial.suggest_categorical("dense_units", [8, 16, 32])
-    embedding_dim = trial.suggest_categorical("embedding_dim", [32, 64, 128])
+    embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
     learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
     batch_size = trial.suggest_categorical("batch_size", [64, 128, 256, 512])
 
@@ -118,12 +118,12 @@ def objective(trial):
     # TRAINING BREVE (IMPORTANTE)
     # ----------------------
     history = model.fit(
-        X_train_binary_hate,
+        padded_train_hate_sequences,
         y_train_binary_hate,
-        validation_data=(X_test_binary_hate, y_test_binary_hate),
+        validation_data=(padded_test_hate_sequences, y_test_binary_hate),
         epochs=12,                   # breve training — abbastanza per capire i trends
         batch_size=batch_size,
-        verbose=0,
+        verbose=1,
         callbacks=[early_stop, reduce_lr],
     )
 
