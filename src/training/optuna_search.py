@@ -4,9 +4,9 @@ import numpy as np
 import os
 import math
 import sys
+import json
 
-from tensorflow.keras.callbacks import EarlyStopping
-from tensorflow.keras.callbacks import ReduceLROnPlateau
+from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -66,10 +66,10 @@ def objective(trial):
     # ----------------------
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
     lstm_units = trial.suggest_categorical("lstm_units", [16, 32, 64, 128])
-    dense_units = trial.suggest_categorical("dense_units", [8, 16, 32])
+    dense_units = trial.suggest_categorical("dense_units", [8, 16, 32, 64])
     embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
-    learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [64, 128, 256, 512])
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-2, log=True)
+    batch_size = trial.suggest_categorical("batch_size", [128, 256, 512])
 
     # ----------------------
     # MODELLO
@@ -145,10 +145,16 @@ if __name__ == "__main__":
     )
 
     print("Starting hyperparameter search...")
-    study.optimize(objective, n_trials=25)
+    study.optimize(objective, n_trials=7)
 
     print("\n───────────────────────────────────────────────")
     print(" BEST HYPERPARAMETERS FOUND ")
     print("───────────────────────────────────────────────")
     print(study.best_params)
     print(f"Best F1 Score: {study.best_value:.4f}")
+
+    # Salva best params
+    with open("result/binary_hate/best_hyperparams_binary_hate.json", "w") as f:
+        json.dump(study.best_params, f, indent=4)
+        json.dump({"best_f1": study.best_value}, f, indent=4)
+
