@@ -30,12 +30,12 @@ from models import binary_hate_model
 
 SEED = 42
 
-os.environ["PYTHONHASHSEED"] = str(SEED)
+'''os.environ["PYTHONHASHSEED"] = str(SEED)
 os.environ["TF_DETERMINISTIC_OPS"] = '1'
 os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
 os.environ["OMP_NUM_THREADS"] = '1'
 os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
-os.environ["TF_NUM_INTEROP_THREADS"] = '1'
+os.environ["TF_NUM_INTEROP_THREADS"] = '1'''
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -90,10 +90,10 @@ def objective(trial):
     # SAMPLING IPERPARAMETRI
     # ----------------------
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
-    lstm_units = trial.suggest_categorical("lstm_units", [16, 32, 64, 128])
+    lstm_units = trial.suggest_categorical("lstm_units", [32, 64, 128])
     dense_units = trial.suggest_categorical("dense_units", [8, 16, 32, 64])
     embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
-    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
+    learning_rate = trial.suggest_float("learning_rate", 1e-4, 3e-2, log=True)
     batch_size = trial.suggest_categorical("batch_size", [256, 512])
 
     # ----------------------
@@ -143,7 +143,8 @@ def objective(trial):
     history = model.fit(
         padded_train_hate_sequences,
         y_train_binary_hate,
-        validation_data=(padded_test_hate_sequences, y_test_binary_hate),
+        validation_split = 0.2,
+        #validation_data=(padded_test_hate_sequences, y_test_binary_hate),
         epochs=12,                  
         batch_size=batch_size,
         #class_weight = class_weights_hate(y_train_binary_hate),
@@ -179,4 +180,61 @@ if __name__ == "__main__":
     # Salva best params
     with open("results/binary_hate/best_hyperparams_binary_hate.json", "w") as f:
       json.dump({**study.best_params, "best_f1": study.best_value}, f, indent=4)
+
+
+
+    # -----------------------------------------------------
+    # DOPO OPTUNA: VALUTAZIONE SUL TEST SET
+    # -----------------------------------------------------
+    print("\nTraining final model using best hyperparameters...")
+
+    best_params = study.best_params
+
+    # Ricrea il modello con i best params
+    best_model = binary_hate_model(
+        vocabulary_size=vocabulary_hate_size,
+        max_len=max_len_hate,
+        dropout=best_params["dropout"],
+        lstm_units=best_params["lstm_units"],
+        embedding_dim=best_params["embedding_dim"],
+        dense_units=best_params["dense_units"],
+        optimizer=tf.keras.optimizers.AdamW(learning_rate=best_params["learning_rate"]),
+        loss="binary_crossentropy",
+        metrics=[
+            'accuracy',
+            tf.keras.metrics.Precision(name='precision'),
+            tf.keras.metrics.Recall(name='recall'),
+            F1Score(name="f1"),
+        ],
+    )
+
+    # Allena su TUTTO il train (train + val)
+    best_model.fit(
+        padded_train_hate_sequences,
+        y_train_binary_hate,
+        epochs=20,
+        batch_size=best_params["batch_size"],
+        #class_weight=class_weights_hate(y_train_binary_hate),
+        validation_split=0.0,    # niente validation qui
+        verbose=1
+    )
+
+    # Predizione sul TEST
+    print("\nEvaluating on TEST SET...")
+    test_metrics = best_model.evaluate(
+        padded_test_hate_sequences,
+        y_test_binary_hate,
+        verbose=1
+    )
+
+    print("\n────────────────────────────")
+    print(" RESULTS ON TEST SET")
+    print("────────────────────────────")
+    for name, value in zip(best_model.metrics_names, test_metrics):
+        print(f"{name}: {value:.4f}")
+
+    # Salva anche i risultati sul test
+    with open("results/binary_hate/test_results.json", "w") as f:
+        json.dump({name: float(value) for name, value in zip(best_model.metrics_names, test_metrics)}, f, indent=4)
+
 

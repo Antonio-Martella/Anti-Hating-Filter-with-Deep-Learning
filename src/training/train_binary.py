@@ -13,24 +13,24 @@ from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dat
 from models import binary_hate_model, callback_binary_hate, class_weights_hate
 
 
-'''# ---------------------------------------
+# ---------------------------------------
 # REPRODUCIBILITY 
 # ---------------------------------------
 
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-os.environ["TF_DETERMINISTIC_OPS"] = '0'
-os.environ["TF_CUDNN_DETERMINISTIC"] = '0'
-os.environ["OMP_NUM_THREADS"] = '0'
-os.environ["TF_NUM_INTRAOP_THREADS"] = '0'
-os.environ["TF_NUM_INTEROP_THREADS"] = '0'
+os.environ["TF_DETERMINISTIC_OPS"] = '1'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
+os.environ["TF_NUM_INTEROP_THREADS"] = '1'
 
 random.seed(SEED)
 np.random.seed(SEED)
 tf.random.set_seed(SEED)
 
-# -----------------------------------'''
+# -----------------------------------
 
 # LOADING AND PREPROCESSING OF THE TEXT CORPUS
 df = load_dataset()
