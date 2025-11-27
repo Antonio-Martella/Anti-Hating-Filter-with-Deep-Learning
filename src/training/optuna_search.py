@@ -22,11 +22,11 @@ from models import binary_hate_model, class_weights_hate
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-os.environ["TF_DETERMINISTIC_OPS"] = '1'
-os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
-os.environ["OMP_NUM_THREADS"] = '1'
-os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
-os.environ["TF_NUM_INTEROP_THREADS"] = '1'
+#os.environ["TF_DETERMINISTIC_OPS"] = '1'
+#os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
+#os.environ["OMP_NUM_THREADS"] = '1'
+#os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
+#os.environ["TF_NUM_INTEROP_THREADS"] = '1'
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -63,11 +63,11 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
 def objective(trial):
     # HYPERPARAMETERS
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
-    lstm_units = trial.suggest_categorical("lstm_units", [32, 64, 128])
-    dense_units = trial.suggest_categorical("dense_units", [8, 16, 32, 64])
-    embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
-    learning_rate = trial.suggest_float("learning_rate", 1e-4, 3e-2, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [256, 512])
+    lstm_units = trial.suggest_categorical("lstm_units", [64, 96, 128])
+    dense_units = trial.suggest_categorical("dense_units", [8, 16])
+    embedding_dim = trial.suggest_categorical("embedding_dim", [32, 64, 128])
+    learning_rate = trial.suggest_float("learning_rate", 1e-4, 5e-2, log=True)
+    batch_size = trial.suggest_categorical("batch_size", [256, 512, 1024])
 
     # MODEL
     optimizer = tf.keras.optimizers.AdamW(learning_rate=learning_rate)
