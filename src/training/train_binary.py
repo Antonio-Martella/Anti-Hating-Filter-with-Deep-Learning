@@ -84,10 +84,10 @@ csv_logger_binary_hate = CSVLoggerCustom('results/binary_hate/log_training_model
 history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_binary_hate,
                                             epochs = 100,
-                                            #validation_split = 0.2,
-                                            validation_data=(padded_test_hate_sequences, y_test_binary_hate),
+                                            validation_split = 0.2,
+                                            #validation_data=(padded_test_hate_sequences, y_test_binary_hate),
                                             batch_size = best_hyperparams['batch_size'],
-                                            #class_weight = class_weights_hate(y_train_binary_hate),
+                                            class_weight = class_weights_hate(y_train_binary_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
