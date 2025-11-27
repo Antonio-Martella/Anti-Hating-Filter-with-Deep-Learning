@@ -69,7 +69,6 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
   vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pad(X_train = X_train_binary_hate,
                                                                      X_test = X_test_binary_hate,
                                                                      folder = 'binary_hate')
-print(max_len_hate)
 
 # tokenizzazione & padding
 #tokenizer, padded_sequences, vocabulary_size, max_len = tokenization_and_pad(
