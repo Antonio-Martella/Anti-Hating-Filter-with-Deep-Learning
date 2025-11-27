@@ -23,6 +23,27 @@ from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dat
 from models import binary_hate_model
 
 
+
+# ---------------------------------------
+# REPRODUCIBILITY 
+# ---------------------------------------
+
+SEED = 42
+
+os.environ["PYTHONHASHSEED"] = str(SEED)
+os.environ["TF_DETERMINISTIC_OPS"] = '1'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
+os.environ["TF_NUM_INTEROP_THREADS"] = '1'
+
+random.seed(SEED)
+np.random.seed(SEED)
+tf.random.set_seed(SEED)
+
+# -----------------------------------
+
+
 # -----------------------------------------------------
 # CARICA I DATI - QUESTO È IDENTICO AL TUO train_binary
 # -----------------------------------------------------
@@ -148,7 +169,7 @@ if __name__ == "__main__":
     )
 
     print("Starting hyperparameter search...")
-    study.optimize(objective, n_trials=5)
+    study.optimize(objective, n_trials=2)
 
     print("\n───────────────────────────────────────────────")
     print(" BEST HYPERPARAMETERS FOUND ")
