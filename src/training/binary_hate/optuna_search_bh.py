@@ -5,16 +5,13 @@ import math
 import sys
 import json
 import random
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tensorflow as tf
 from sklearn.metrics import f1_score
 from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
-import sys
-import os
-
-# Aggiungi src al path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, F1Score
 from models import binary_hate_model, class_weights_hate
@@ -68,13 +65,13 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
 def objective(trial):
 
     # HYPERPARAMETERS
-    embedding_dim = trial.suggest_categorical("embedding_dim", [32, 64, 128])
-    lstm_units = trial.suggest_categorical("lstm_units", [32, 64, 128, 256])
+    embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
+    lstm_units = trial.suggest_categorical("lstm_units", [32, 64, 128])
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
     dense_units = trial.suggest_categorical("dense_units", [8, 16])
 
     learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [256, 512, 1024])
+    batch_size = trial.suggest_categorical("batch_size", [128, 256, 512, 1024])
 
     if lstm_units >= embedding_dim:
         raise optuna.TrialPruned("LSTM units must be < embedding dim")
@@ -124,7 +121,7 @@ def objective(trial):
         validation_split = 0.2,
         epochs=10,                  
         batch_size=batch_size,
-        #class_weight = class_weights_hate(y_train_binary_hate),
+        class_weight = class_weights_hate(y_train_binary_hate),
         callbacks=[early_stop, reduce_lr]
     )
 
