@@ -12,6 +12,7 @@ from sklearn.metrics import (
 )
 
 from .f1_threshold_optimization import f1_score_optimization
+from .class_distribution import plot_class_distribution
 
 
 def evaluate_model(model, X_test, y_test, folder=None):
@@ -36,6 +37,9 @@ def evaluate_model(model, X_test, y_test, folder=None):
     - CSV file with precision, recall, F1-score, and support: "results/{folder}/metrics_report_on_test.csv"
     - PNG confusion matrix for binary classification: "results/{folder}/confusion_matrix.png"
     '''
+
+    count = df['has_hate'].value_counts().sort_index()
+    plot_class_distribution(count, folder='binary_hate')
 
     y_pred = model.predict(X_test)
 

@@ -11,7 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"
 from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, split_dataset_hate_type, \
   CSVLoggerCustom, F1Score
 from models import binary_hate_model, callback_binary_hate, class_weights_hate
-from evaluation import evaluate_model
+from evaluation import evaluate_model, plot_class_distribution
 
 
 # ---------------------------------------
@@ -35,6 +35,11 @@ tf.random.set_seed(SEED)
 
 # LOADING AND PREPROCESSING OF THE TEXT CORPUS
 df = load_dataset()
+
+# CLASS DISTRIBUTION
+binary_series = (df['sum_injurious'] >= 1).astype(int)
+count = binary_series.value_counts().sort_index()
+plot_class_distribution(count, folder='binary_hate')
 
 # SPLIT AND SAVE THE DATASETS
 train_binary_hate, test_binary_hate = split_dataset_binary(df = df, 
