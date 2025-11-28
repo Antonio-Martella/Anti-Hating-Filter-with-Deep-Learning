@@ -6,11 +6,12 @@ import os
 import sys
 import json
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
 from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, split_dataset_hate_type, \
   CSVLoggerCustom, F1Score
 from models import binary_hate_model, callback_binary_hate, class_weights_hate
+from evaluation import evaluate_model
 
 
 # ---------------------------------------
@@ -85,18 +86,17 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             y_train_binary_hate,
                                             epochs = 100,
                                             validation_split = 0.2,
-                                            #validation_data=(padded_test_hate_sequences, y_test_binary_hate),
                                             batch_size = best_hyperparams['batch_size'],
-                                            class_weight = class_weights_hate(y_train_binary_hate),
+                                            #class_weight = class_weights_hate(y_train_binary_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.keras')
 #model_hate_binary.save('models/binary_hate/model_hate_binary.h5')
 
-#evaluate_model(model_hate_binary, 
-#               padded_test_hate_sequences, 
-#               y_test_binary_hate, 
-#               folder='binary_hate')
+evaluate_model(model_hate_binary, 
+               padded_test_hate_sequences, 
+               y_test_binary_hate, 
+               folder='binary_hate')
 
 #model_hate_binary.evaluate(padded_test_hate_sequences, y_test_binary_hate)

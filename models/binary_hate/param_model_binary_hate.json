@@ -1,3 +1,4 @@
 {
-    "max_len": 1403
+    "max_len": 1403,
+    "best_threshold": 0.47270041704177856
 }
