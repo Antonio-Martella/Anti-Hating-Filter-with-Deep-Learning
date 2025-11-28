@@ -76,8 +76,10 @@ def evaluate_model(model, X_test, y_test, threshold = 0.5, folder = None):
   - metrics_report.csv : precision, recall, f1, support metrics
   - confusion_matrix.png : confusion matrix saved as an image
   ''' 
+
   y_pred = model.predict(X_test)
   optimal_threshold = f1_score_optimization(y_test, y_pred, folder)
+  
   print(optimal_threshold)
 
   y_pred_opt = (y_pred >= optimal_threshold).astype(int).flatten()
