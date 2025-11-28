@@ -5,7 +5,6 @@ import math
 import sys
 import json
 import random
-#sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import tensorflow as tf
 from sklearn.metrics import f1_score
