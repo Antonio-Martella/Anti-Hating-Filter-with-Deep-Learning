@@ -20,7 +20,7 @@ L’intero workflow – dalla preparazione del dataset alla progettazione dei mo
 ## Obiettivo del progetto
 
 L’obiettivo è costruire un modello robusto in grado di:
-```
+
 - Identificare se un commento contiene contenuti d’odio (classificazione binaria).
 
 - Classificare le specifiche categorie di tossicità presenti nel commento (classificazione multilabel), tra cui:
@@ -37,7 +37,7 @@ L’obiettivo è costruire un modello robusto in grado di:
 
 	- obscene
 
-```
+
 
 Questo progetto mostra un flusso completo di *Deep Learning* per classificare commenti testuali (binary e multilabel).  
 Include: preprocessing, addestramento, validazione e inferenza finale.
