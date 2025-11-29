@@ -45,6 +45,7 @@ Il sistema è organizzato in due stadi:
 
 	- Ottimizzato per ridurre i falsi negativi (non perdere commenti tossici).
 
+
 2. Modello Multilabel
 
 	- Viene attivato solo quando il primo modello segnala la presenza di tossicità.
@@ -58,34 +59,22 @@ Questa struttura “a cascata” migliora performance, efficienza e interpretabi
 
 La struttura del repository è organizzata per separare in modo chiaro i diversi componenti del workflow di Deep Learning:
 ```
-Progetto_DL/
-├── notebooks/ # Contiene i notebook Jupyter (.ipynb) con EDA, training e test
-│ ├── Progetto_DL.ipynb # Notebook principale: analisi, preprocessing, training, validazione e inferenza
-│ └── demo_inference.ipynb # (Facoltativo) notebook demo con poche predizioni pronte da mostrare
-│
-├── src/ # Moduli Python che contengono il codice eseguibile
-│ ├── data_utils.py # Funzioni per il caricamento e preprocessing del dataset
-│ ├── model.py # Definizione dell’architettura del modello Keras/TensorFlow
-│ ├── train.py # Script per addestrare il modello e salvare i pesi
-│ ├── evaluate.py # Funzioni di valutazione e metriche
-│ └── predict.py # Script per lanciare inferenza su nuovi dati
-│
-├── data/ # Cartella dedicata ai dati
-│ ├── README.md # Spiega dove scarica il dataset
-│ └── dataset_orignale.csv # Dataset utilizzato
-│
-├── models/ # Modelli addestrati o link per scaricarli
-│ └── README.md # Spiega come scaricare i pesi del modello
-│
-├── results/ # Risultati sperimentali (grafici, tabelle, log)
-│ ├── training_curves.png # Esempio: curva loss/accuracy
-│ ├── confusion_matrix.png # Esempio: matrice di confusione
-│ └── metrics_report.csv # Risultati numerici
-│
-├── requirements.txt # Librerie Python necessarie al progetto
-├── LICENSE # Licenza MIT
-├── .gitignore # File che indica a Git cosa non deve essere incluso
-└── README.md # File principale di documentazione del progetto
+.
+├── data/                      # Dataset (raw e preprocessato). Non contiene file di grandi dimensioni.
+├── notebooks/                 # Notebook di analisi esplorativa, esperimenti e prototipazione dei modelli.
+├── src/
+│   ├── preprocessing/         # Script per cleaning, tokenizzazione e preparazione testo
+│   ├── models/                # Definizione delle architetture (binaria e multilabel)
+│   ├── training/              # Script di training, valutazione e tuning dell'hyperparameters
+│   ├── inference/             # Script per la predizione su nuovi commenti
+│   └── utils/                 # Funzioni di supporto (metriche, callback, salvataggio/ caricamento modelli)
+├── models/                    # Modelli salvati (pesI, tokenizer, best threshold, parametri)
+├── results/                   # Metriche, curve di training, confusion matrix, report
+├── requirements.txt           # Dipendenze per Windows/Linux/macOS Intel
+├── requirements_macos_arm.txt # Dipendenze per macOS ARM (M1/M2/M3)
+├── README.md                  # Documentazione del progetto
+└── LICENSE                    # Licenza (opzionale)
+
 ```
 Ogni componente del progetto è stato pensato per rendere il codice modulare e facilmente riutilizzabile:
 - **`notebooks/`** contiene il flusso completo del progetto, utile per l’analisi e la presentazione.
