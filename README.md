@@ -65,7 +65,7 @@ La struttura del repository è organizzata per separare in modo chiaro i diversi
 ├── src/
 │   ├── preprocessing/         # Script per cleaning, tokenizzazione e preparazione testo
 │   ├── models/                # Definizione delle architetture (binaria e multilabel)
-│   ├── training/              # Script di training, valutazione e tuning dell'hyperparameters
+│   ├── training/              # Script di training e tuning dell'hyperparameters
 │   ├── inference/             # Script per la predizione su nuovi commenti
 │   └── utils/                 # Funzioni di supporto (metriche, callback, salvataggio/ caricamento modelli)
 ├── models/                    # Modelli salvati (pesI, tokenizer, best threshold, parametri)
