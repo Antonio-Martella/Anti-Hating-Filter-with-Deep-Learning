@@ -60,7 +60,7 @@ Questa struttura “a cascata” migliora performance, efficienza e interpretabi
 La struttura del repository è organizzata per separare in modo chiaro i diversi componenti del workflow di Deep Learning:
 ```
 .
-├── data/                      # Dataset (raw e preprocessato). Non contiene file di grandi dimensioni.
+├── data/                      # Dataset per training e inferenza
 ├── notebooks/                 # Notebook di analisi esplorativa, esperimenti e prototipazione dei modelli.
 ├── src/
 │   ├── preprocessing/         # Script per cleaning, tokenizzazione e preparazione testo
