@@ -83,21 +83,18 @@ Clonare la repository:
 git clone https://github.com/Antonio-Martella/Anti-Hating-Filter-with-Deep-Learning.git
 cd Anti-Hating-Filter-with-Deep-Learning/
 ```
-
-```
-git clone https://github.com/tuusername/toxic-comment-classification.git
-cd toxic-comment-classification
+Creare e attivare l'ambiente virtuale:
+```bash
 python -m venv venv
-source venv/bin/activate   # Linux/macOS
-venv\Scripts\activate      # Windows
+source venv/bin/activate    # Linux/macOS
+venv\Scripts\activate       # Windows
+```
+Installare le dipendenze:
+```bash
+# Windows/Linux/macOS (Intel/ARM)
 pip install -r requirements.txt
 ```
-
-Ogni componente del progetto è stato pensato per rendere il codice modulare e facilmente riutilizzabile:
-- **`notebooks/`** contiene il flusso completo del progetto, utile per l’analisi e la presentazione.
-- **`src/`** raccoglie il codice vero e proprio, strutturato in moduli indipendenti.
-- **`data/`** permette di organizzare i dati di input senza appesantire il repository (i dataset completi non sono caricati su GitHub).
-- **`models/`** include o descrive i modelli addestrati.
-- **`results/`** mostra le prestazioni ottenute, utile per confrontare esperimenti diversi.
-
-
+```bash
+# macOS ARM (Apple Silicon)
+pip install -r requirements_macos_arm.txt
+```
