@@ -43,7 +43,7 @@ Il sistema è organizzato in due stadi:
 
 	- Distingue commenti neutri da commenti che presentano qualunque tipo di tossicità.
 
-Ottimizzato per ridurre i falsi negativi (non perdere commenti tossici).
+	- Ottimizzato per ridurre i falsi negativi (non perdere commenti tossici).
 
 2. Modello Multilabel
 
