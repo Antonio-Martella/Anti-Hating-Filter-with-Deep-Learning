@@ -68,7 +68,7 @@ La struttura del repository è organizzata per separare in modo chiaro i diversi
 │   ├── training/              # Script di training e tuning dell'hyperparameters
 │   ├── inference/             # Script per la predizione su nuovi commenti
 │   └── utils/                 # Funzioni di supporto (metriche, callback, salvataggio/ caricamento modelli)
-├── models/                    # Modelli salvati (pesI, tokenizer, best threshold, parametri)
+├── models/                    # Modelli salvati (pesi, tokenizer, best threshold, parametri)
 ├── results/                   # Metriche, curve di training, confusion matrix, report
 ├── requirements.txt           # Dipendenze per Windows/Linux/macOS Intel
 ├── requirements_macos_arm.txt # Dipendenze per macOS ARM (M1/M2/M3)
