@@ -117,3 +117,12 @@ python src/training/binary_hate/optuna_search_bh.py
 # Modello hate_type
 python src/training/hate_type/optuna_search_ht.py
 ```
+
+**Training dei modelli con i best hyperparameters**
+```bash
+# Modello binary_hate
+python src/training/binary_hate/train_binary_hate_model.py
+
+# Modello hate_type
+python src/training/hate_type/train_hate_type_model.py
+```
