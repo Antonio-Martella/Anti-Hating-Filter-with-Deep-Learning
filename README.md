@@ -103,3 +103,6 @@ pip install -r requirements.txt
 # MacOS ARM (Apple Silicon)
 pip install -r requirements_macos_arm.txt
 ```
+
+## Usage
+I pesi dei modelli possono essere scaricati 
