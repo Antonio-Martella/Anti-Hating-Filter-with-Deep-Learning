@@ -73,9 +73,20 @@ La struttura del repository è organizzata per separare in modo chiaro i diversi
 ├── requirements.txt           # Dipendenze per Windows/Linux/macOS Intel
 ├── requirements_macos_arm.txt # Dipendenze per macOS ARM (M1/M2/M3)
 ├── README.md                  # Documentazione del progetto
-└── LICENSE                    # Licenza (opzionale)
+└── LICENSE                    # Licenza
 
 ```
+
+## Installation
+
+git clone https://github.com/tuusername/toxic-comment-classification.git
+cd toxic-comment-classification
+python -m venv venv
+source venv/bin/activate   # Linux/macOS
+venv\Scripts\activate      # Windows
+pip install -r requirements.txt
+
+
 Ogni componente del progetto è stato pensato per rendere il codice modulare e facilmente riutilizzabile:
 - **`notebooks/`** contiene il flusso completo del progetto, utile per l’analisi e la presentazione.
 - **`src/`** raccoglie il codice vero e proprio, strutturato in moduli indipendenti.
