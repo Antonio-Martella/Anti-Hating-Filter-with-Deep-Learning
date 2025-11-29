@@ -127,15 +127,16 @@ python src/training/binary_hate/train_binary_hate_model.py
 python src/training/hate_type/train_hate_type_model.py
 ```
 
-### 2️⃣Usare modelli pre-addestrati
+### Usare modelli pre-addestrati
 
 Se vuoi risparmiare tempo e non allenare i modelli da zero, puoi scaricare i modelli già addestrati e usarli direttamente per l’inferenza.
 
-**1. Scarica i modelli dai link del Drive:**
+**Scarica i modelli dai link del Drive:**
 - [model_binary_hate.keras](https://drive.google.com/file/d/1o3QSmFB2EIus8QugOYzuapOQB81vP2Gl/view?usp=drive_link) → posizionalo in `models/binary_hate/`
 - `hate_type.keras` → posizionalo in `models/hate_type/`
 
-**2. Esegui l’inferenza su un commento di esempio**
+### Inferenza 
+Per eseguire l'inferenza su un commento di esempio:
 ```bash
 python src/inference/predict.py --text "You are an idiot"
 
