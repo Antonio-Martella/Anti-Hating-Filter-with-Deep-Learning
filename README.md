@@ -80,8 +80,8 @@ La struttura del repository è organizzata per separare in modo chiaro i diversi
 ## Installation
 Clonare la repository:
 ```bash
-git clone https://github.com/tuusername/toxic-comment-classification.git
-cd toxic-comment-classification
+git clone https://github.com/Antonio-Martella/Anti-Hating-Filter-with-Deep-Learning.git
+cd Anti-Hating-Filter-with-Deep-Learning/
 ```
 
 ```
