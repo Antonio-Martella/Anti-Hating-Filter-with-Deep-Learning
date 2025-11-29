@@ -85,9 +85,14 @@ cd Anti-Hating-Filter-with-Deep-Learning/
 ```
 Creare e attivare l'ambiente virtuale:
 ```bash
+# Linux/MacOS
 python -m venv venv
-source venv/bin/activate    # Linux/macOS
-venv\Scripts\activate       # Windows
+source venv/bin/activate    # Linux/MacOS
+```
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate    
 ```
 Installare le dipendenze:
 ```bash
@@ -95,6 +100,6 @@ Installare le dipendenze:
 pip install -r requirements.txt
 ```
 ```bash
-# macOS ARM (Apple Silicon)
+# MacOS ARM (Apple Silicon)
 pip install -r requirements_macos_arm.txt
 ```
