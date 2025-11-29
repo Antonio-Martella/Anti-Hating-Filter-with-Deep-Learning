@@ -78,14 +78,14 @@ La struttura del repository è organizzata per separare in modo chiaro i diversi
 ```
 
 ## Installation
-
+```
 git clone https://github.com/tuusername/toxic-comment-classification.git
 cd toxic-comment-classification
 python -m venv venv
 source venv/bin/activate   # Linux/macOS
 venv\Scripts\activate      # Windows
 pip install -r requirements.txt
-
+```
 
 Ogni componente del progetto è stato pensato per rendere il codice modulare e facilmente riutilizzabile:
 - **`notebooks/`** contiene il flusso completo del progetto, utile per l’analisi e la presentazione.
