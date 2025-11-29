@@ -105,4 +105,14 @@ pip install -r requirements_macos_arm.txt
 ```
 
 ## Usage
-I pesi dei modelli possono essere scaricati 
+### Training e Tuning da zero
+Tuning degli iperparametri dei modelli
+```bash
+python src/training/binary_hate/optuna_search_bh.py
+python src/training/hate_type/optuna_search_ht.py
+``` 
+Training dei modelli con i *best_hyperparameters*
+```bash
+python src/training/binary_hate/train_binary_hate_model.py
+python src/training/hate_type/train_hate_type_model.py
+```
