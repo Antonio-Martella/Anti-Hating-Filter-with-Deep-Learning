@@ -19,9 +19,9 @@ L’intero workflow – dalla preparazione del dataset alla progettazione dei mo
 
 L’obiettivo è costruire un modello robusto in grado di:
 
-- Identificare se un commento contiene contenuti d’odio (classificazione binaria).
+1. Identificare se un commento contiene contenuti d’odio (classificazione binaria).
 
-- Classificare le specifiche categorie di tossicità presenti nel commento (classificazione multilabel), tra cui:
+2. Classificare le specifiche categorie di tossicità presenti nel commento (classificazione multilabel), tra cui:
 
 	- toxic
 
@@ -35,8 +35,23 @@ L’obiettivo è costruire un modello robusto in grado di:
 
 	- obscene
 
-Questo progetto mostra un flusso completo di *Deep Learning* per classificare commenti testuali (binary e multilabel).  
-Include: preprocessing, addestramento, validazione e inferenza finale.
+## Architettura del sistema
+
+Il sistema è organizzato in due stadi:
+
+1. Modello Binario
+
+	- Distingue commenti neutri da commenti che presentano qualunque tipo di tossicità.
+
+Ottimizzato per ridurre i falsi negativi (non perdere commenti tossici).
+
+2. Modello Multilabel
+
+	- Viene attivato solo quando il primo modello segnala la presenza di tossicità.
+
+	- È addestrato esclusivamente sui commenti tossici, per distinguere le diverse categorie.
+
+Questa struttura “a cascata” migliora performance, efficienza e interpretabilità dei risultati.
 
 
 ## Struttura del progetto
