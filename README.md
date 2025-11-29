@@ -4,8 +4,7 @@
 Questo progetto nasce con l’obiettivo di sviluppare un sistema di classificazione automatica dei commenti tossici utilizzando tecniche di Deep Learning applicate al Natural Language Processing (NLP).
 
 L’intero workflow – dalla preparazione del dataset alla progettazione dei modelli, dall’ottimizzazione degli iperparametri alla valutazione finale – è stato progettato e implementato da me, con l’intento di mostrare competenze solide in:
-
-``` 
+ 
 - Machine Learning e Deep Learning
 
 - NLP e text preprocessing
@@ -16,7 +15,6 @@ L’intero workflow – dalla preparazione del dataset alla progettazione dei mo
 
 - Buone pratiche di MLOps a livello progettuale (struttura repository, riproducibilità, separazione dei moduli)
 
-```
 ## Obiettivo del progetto
 
 L’obiettivo è costruire un modello robusto in grado di:
@@ -36,8 +34,6 @@ L’obiettivo è costruire un modello robusto in grado di:
 	- identity_hate
 
 	- obscene
-
-
 
 Questo progetto mostra un flusso completo di *Deep Learning* per classificare commenti testuali (binary e multilabel).  
 Include: preprocessing, addestramento, validazione e inferenza finale.
