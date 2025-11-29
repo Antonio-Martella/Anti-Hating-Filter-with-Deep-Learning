@@ -87,7 +87,7 @@ Creare e attivare l'ambiente virtuale:
 ```bash
 # Linux/MacOS
 python -m venv venv
-source venv/bin/activate    # Linux/MacOS
+source venv/bin/activate
 ```
 ```bash
 # Windows
