@@ -1,4 +1,43 @@
-# Progetto Deep Learning – Classificazione Commenti Tossic
+# Deep Learning Project – Toxic Comment Classification
+
+## Overview
+Questo progetto nasce con l’obiettivo di sviluppare un sistema di classificazione automatica dei commenti tossici utilizzando tecniche di Deep Learning applicate al Natural Language Processing (NLP).
+
+L’intero workflow – dalla preparazione del dataset alla progettazione dei modelli, dall’ottimizzazione degli iperparametri alla valutazione finale – è stato progettato e implementato da me, con l’intento di mostrare competenze solide in:
+
+``` 
+- Machine Learning e Deep Learning
+
+- NLP e text preprocessing
+
+- Architetture basate su reti ricorrenti (LSTM)
+
+- Ottimizzazione, validazione e gestione dei modelli
+
+- Buone pratiche di MLOps a livello progettuale (struttura repository, riproducibilità, separazione dei moduli)
+
+```
+## Obiettivo del progetto
+
+L’obiettivo è costruire un modello robusto in grado di:
+```
+- Identificare se un commento contiene contenuti d’odio (classificazione binaria).
+
+- Classificare le specifiche categorie di tossicità presenti nel commento (classificazione multilabel), tra cui:
+
+	- toxic
+
+	- severe_toxic
+
+	- insult
+
+	- threat
+
+	- identity_hate
+
+	- obscene
+
+```
 
 Questo progetto mostra un flusso completo di *Deep Learning* per classificare commenti testuali (binary e multilabel).  
 Include: preprocessing, addestramento, validazione e inferenza finale.
