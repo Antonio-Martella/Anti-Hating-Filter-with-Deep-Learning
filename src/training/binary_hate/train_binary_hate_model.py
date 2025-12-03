@@ -100,6 +100,7 @@ model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/D
 #model_hate_binary.save('models/binary_hate/model_hate_binary.h5')
 
 evaluate_model(model_hate_binary, 
+               df,
                padded_test_hate_sequences, 
                y_test_binary_hate, 
                folder='binary_hate')

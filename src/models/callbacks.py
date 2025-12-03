@@ -4,7 +4,7 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCh
 def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_f1',  
-                                           factor = 0.8,          
+                                           factor = 0.5,          
                                            patience = 3,         
                                            min_lr = 1e-6,        
                                            verbose = 0,

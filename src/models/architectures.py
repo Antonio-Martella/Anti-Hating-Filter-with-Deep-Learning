@@ -9,11 +9,11 @@ def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metric
   model = Sequential()
   model.add(Embedding(input_dim = vocabulary_size, output_dim = embedding_dim, input_length = max_len))
 
-  model.add(Bidirectional(LSTM(lstm_units, return_sequences=False, activation='tanh')))
-  #model.add(AttentionLayer())
+  model.add(Bidirectional(LSTM(lstm_units, return_sequences=True, activation='tanh')))
+  model.add(AttentionLayer())
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
-
+  
   #
   model.add(Dense(dense_units, activation='relu'))
   model.add(BatchNormalization())
