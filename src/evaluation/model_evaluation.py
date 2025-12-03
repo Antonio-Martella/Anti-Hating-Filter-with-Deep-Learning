@@ -15,7 +15,7 @@ from .f1_threshold_optimization import f1_score_optimization
 from .class_distribution import plot_class_distribution
 
 
-def evaluate_model(model, X_test, y_test, folder=None):
+def evaluate_model(model, df, X_test, y_test, folder=None):
 
     '''
     Evaluates a trained model on a test set using an optimized threshold.
