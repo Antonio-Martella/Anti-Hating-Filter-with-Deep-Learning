@@ -1,14 +1,15 @@
 import random
 import numpy as np
 import tensorflow as tf
-import pandas as pdx
+import pandas as pd
 import os
 import sys
 import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from sklearn.metrics import precision_recall_curve
+from sklearn.metrics import precision_recall_curve, accuracy_score, precision_score, \
+  recall_score, f1_score
 
 from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_hate_type, \
   CSVLoggerCustom, F1Score
@@ -129,3 +130,36 @@ for i, label in enumerate(labels):
 
     optimal_thresholds_multilabel[label] = optimal_threshold
     print(f"\033[92m{label}: {optimal_threshold:.3f}\033[0m")
+
+
+print("\n\033[92mRisultati multilabel sull'intero set di test multilabel con thresholds ottimali:\033[0m")
+print("")
+
+n_classes = y_true_multi.shape[1]
+metrics_data = []
+
+for i in range(n_classes):
+    label = y_test_hate_type.columns[i]
+    optimal_threshold = optimal_thresholds_multilabel[label]
+
+    y_pred_multi_binary = (y_pred_multi[:, i] >= optimal_threshold).astype(int)
+
+    acc = accuracy_score(y_true_multi[:, i], y_pred_multi_binary)
+    prec = precision_score(y_true_multi[:, i], y_pred_multi_binary, zero_division = 0)
+    rec = recall_score(y_true_multi[:, i], y_pred_multi_binary, zero_division = 0)
+    f1 = f1_score(y_true_multi[:, i], y_pred_multi_binary, zero_division = 0)
+    metrics_data.append({'Classe': label,
+                         'Accuracy': acc,
+                         'Precision': prec,
+                         'Recall': rec,
+                         'F1': f1})
+
+metrics_df = pd.DataFrame(metrics_data)
+
+from IPython.display import display
+display(metrics_df)
+
+y_pred_multi_binary_all_labels = (y_pred_multi >= np.array([optimal_thresholds_multilabel[label] for label in labels])).astype(int)
+micro_prec = precision_score(y_true_multi.flatten(), y_pred_multi_binary_all_labels.flatten(), average='micro', zero_division=0)
+print("")
+print(f"\033[92mPrecisione globale (sull'intero set di test multilabel): {micro_prec:.3f}\033[0m")
