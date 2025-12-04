@@ -5,13 +5,13 @@ def callback_binary_hate():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_f1',  
                                            factor = 0.5,          
-                                           patience = 3,         
+                                           patience = 2,         
                                            min_lr = 1e-6,        
                                            verbose = 0,
                                            mode='max')           
 
   early_stop = EarlyStopping(monitor = 'val_f1',       
-                             patience = 5,                 
+                             patience = 3,                 
                              restore_best_weights = True,
                              verbose = 0,
                              mode='max')
@@ -29,24 +29,24 @@ def callback_binary_hate():
 
 def callback_hate_type():
 
-  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_f1',   
+  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
                                            factor = 0.8,           
                                            patience = 3,            
                                            min_lr = 1e-6,           
-                                           verbose = 0,
-                                           mode='max')            
+                                           verbose = 0)
+                                           #mode='max''')            
 
-  early_stop = EarlyStopping(monitor = 'val_f1',         
+  early_stop = EarlyStopping(monitor = 'val_loss',         
                              patience = 5,               
                              restore_best_weights = True,  
-                             verbose = 0,
-                             mode='max')
+                             verbose = 0)
+                             #mode='max''')
 
   checkpoint = ModelCheckpoint(f'models/hate_type/model_hate_type.keras',
-                               monitor = 'val_f1',
+                               monitor = 'val_loss',
                                save_best_only = True,
                                save_weights_only = False,
-                               verbose = 1,
-                               mode='max')
+                               verbose = 1)
+                               #mode='max''')
 
   return early_stop, checkpoint, reduce_learning_rate
