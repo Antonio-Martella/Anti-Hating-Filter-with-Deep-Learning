@@ -8,7 +8,7 @@ import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, split_dataset_hate_type, \
+from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, \
   CSVLoggerCustom, F1Score
 from models import binary_hate_model, callback_binary_hate, class_weights_hate
 from evaluation import evaluate_model, plot_class_distribution
@@ -97,7 +97,7 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.keras')
-#model_hate_binary.save('models/binary_hate/model_hate_binary.h5')
+#model_hate_binary.save('models/binary_hate/model_hate_binary.keras')
 
 evaluate_model(model_hate_binary,
                padded_test_hate_sequences, 

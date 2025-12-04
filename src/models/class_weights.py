@@ -16,10 +16,10 @@ def class_weights_hate(y_train):
 
 def compute_class_weights(y_train):
 
-  class_counts = np.sum(y_train, axis=0)
+  class_counts = np.sum(y_train, axis=0)     
   class_freq = class_counts / y_train.shape[0]
 
-  weights = 1.0 / class_freq
+  weights = 1.0 / class_freq                 
   weights = weights / np.sum(weights) * len(weights)
 
   return weights
