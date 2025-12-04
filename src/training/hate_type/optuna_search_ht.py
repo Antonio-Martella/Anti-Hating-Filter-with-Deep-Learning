@@ -63,13 +63,13 @@ weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.
 def objective(trial):
 
     # HYPERPARAMETERS
-    embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
-    lstm_units = trial.suggest_categorical("lstm_units", [32, 48, 64, 96, 128])
+    embedding_dim = trial.suggest_categorical("embedding_dim", [128, 256, 512])
+    lstm_units = trial.suggest_categorical("lstm_units", [128, 256, 512])
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
-    dense_units = trial.suggest_categorical("dense_units", [8, 16, 24, 32])
+    dense_units = trial.suggest_categorical("dense_units", [64, 96, 128, 256])
 
     learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [64, 128, 256])
+    batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256, 512])
 
     if lstm_units >= embedding_dim:
         raise optuna.TrialPruned("LSTM units must be < embedding dim")
@@ -97,19 +97,19 @@ def objective(trial):
       
     # CALLBACKS
     early_stop = EarlyStopping(
-        monitor="val_f1",
+        monitor="val_loss",
         patience=3,
-        mode="max",
+        ##mode="max",
         restore_best_weights=True,
         verbose=0
     )
 
     reduce_lr = ReduceLROnPlateau(
-        monitor="val_f1",
+        monitor="val_loss",
         factor=0.8,
         patience=2,
         min_lr=1e-6,
-        mode="max",
+        #mode="max",
         verbose=0
     )
 
@@ -130,14 +130,15 @@ def objective(trial):
 
     
     # OPTUNA GOAL
-    val_f1 = max(history.history["val_f1"])
+    #val_f1 = max(history.history["val_f1"])
 
-    return val_f1
+    val_loss = min(history.history["val_loss"])
+    return val_loss
 
 
 if __name__ == "__main__":
     study = optuna.create_study(
-        direction="maximize",
+        direction="minimize",
         study_name="hate_binary_opt",
         sampler=optuna.samplers.TPESampler(seed=SEED)
     )

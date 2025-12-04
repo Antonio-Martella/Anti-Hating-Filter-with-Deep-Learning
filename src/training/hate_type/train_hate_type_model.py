@@ -76,11 +76,11 @@ with open('results/hate_type/best_hyperparams_hate_type.json', "r") as f:
 model_hate_type = hate_type_model(
   vocabulary_size = vocabulary_hate_size,
   max_len = max_len_hate,
-  dropout = best_hyperparams['dropout'],
-  lstm_units = best_hyperparams['lstm_units'],
-  embedding_dim = best_hyperparams['embedding_dim'],
-  dense_units = best_hyperparams['dense_units'],
-  optimizer = tf.keras.optimizers.AdamW(learning_rate = best_hyperparams['learning_rate']),
+  dropout = 0.2,#best_hyperparams['dropout'],
+  lstm_units = 256,#best_hyperparams['lstm_units'],
+  embedding_dim = 256,#best_hyperparams['embedding_dim'],
+  dense_units = 128,#best_hyperparams['dense_units'],
+  optimizer = tf.keras.optimizers.AdamW(learning_rate = 1e-4),#best_hyperparams['learning_rate']),
   loss = weighted_binary_crossentropy(weights_tensor),
   metrics = [
     'accuracy',
@@ -100,14 +100,9 @@ history_hate_binary = model_hate_type.fit(
    y_train_hate_type,
    epochs = 100,
    validation_split = 0.2,
-   batch_size = best_hyperparams['batch_size'],
+   batch_size = 64,#best_hyperparams['batch_size'],
    callbacks = [callback_hate_type(), csv_logger_hate_type]
 )
-
-# COPY WEIGHTS TO /models (to be added)
-#model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.keras')
-#model_hate_binary.save('models/binary_hate/model_hate_binary.keras')
-
 
 ### -----
 
@@ -122,10 +117,8 @@ print("\n\033[92mThresholds ottimali per la classificazione multilabel (massimiz
 
 for i, label in enumerate(labels):
     precision_multi, recall_multi, thresholds_multi = precision_recall_curve(y_true_multi[:, i], y_pred_multi[:, i])
-    # Escludiamo l'ultimo valore di precision e recall che corrisponde a un threshold non definito
     f1_scores_multi = (2 * precision_multi[:-1] * recall_multi[:-1]) / (precision_multi[:-1] + recall_multi[:-1])
-    f1_scores_multi[np.isnan(f1_scores_multi)] = 0 # Handle NaN values
-
+    f1_scores_multi[np.isnan(f1_scores_multi)] = 0
     optimal_threshold = thresholds_multi[np.argmax(f1_scores_multi)]
 
     optimal_thresholds_multilabel[label] = optimal_threshold
@@ -139,7 +132,7 @@ n_classes = y_true_multi.shape[1]
 metrics_data = []
 
 for i in range(n_classes):
-    label = y_test_hate_type.columns[i]
+    label = labels[i]
     optimal_threshold = optimal_thresholds_multilabel[label]
 
     y_pred_multi_binary = (y_pred_multi[:, i] >= optimal_threshold).astype(int)
