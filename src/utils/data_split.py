@@ -47,32 +47,20 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
 #------------------------------------------------------------------
 
 
-def split_dataset_hate_type(df, test_size=0.2, val_size = 0.2):
-  
-  df = df[df["sum_injurious"] >= 1]
-  print(len(df))
+def split_dataset_hate_type(df, test_size=0.2):
 
-  class_counts = df.loc[:, 'toxic':'identity_hate'].value_counts().sort_index()
+  path = 'data/train_and_test'
+
+  try:
+    df_train = pd.read_csv(f'{path}/train_dataset.csv')
+    df_test = pd.read_csv(f'{path}/test_dataset.csv')
+  except Exception as e:
+    raise RuntimeError(f"\033[91mError loading dataset: {e}.\033[0m")
+  
+  df_train = df_train[df_train["sum_injurious"] >= 1]
+  df_test = df_test[df_test["sum_injurious"] >= 1]
+
+  class_counts = df_train.loc[:, 'toxic':'identity_hate'].value_counts().sort_index()
   evaluation_class(count=class_counts, folder='hate_type')
 
-  train_df, test_df = train_test_split(
-    df,
-    test_size=test_size,
-    random_state=1,
-    shuffle=True
-  )
-    
-  train_df, val_df = train_test_split(
-    train_df,
-    test_size=test_size,
-    random_state=1,
-    shuffle=True
-  )
-    
-  path = 'data/hate_type'
-  os.makedirs(path, exist_ok=True)
-  train_df.to_csv(f"{path}/train_hate_type.csv", index=False)
-  test_df.to_csv(f"{path}/test_hate_type.csv", index=False)
-  val_df.to_csv(f"{path}/val_hate_type.csv", index=False)
-
-  return train_df, test_df, val_df
+  return df_train, df_test

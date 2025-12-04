@@ -12,8 +12,8 @@ from tensorflow.keras.callbacks import EarlyStopping, ReduceLROnPlateau
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 
-from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_binary, F1Score
-from models import binary_hate_model, class_weights_hate
+from utils import load_dataset, preprocess_text, tokenization_and_pad, split_dataset_hate_type, F1Score
+from models import hate_type_model, weighted_binary_crossentropy, class_weights_hate, compute_class_weights
 
 # ---------------------------------------
 # REPRODUCIBILITY 
@@ -34,41 +34,42 @@ tf.random.set_seed(SEED)
 
 # -----------------------------------
 
-print("Loading dataset...")
+#print("Loading dataset...")
 df = load_dataset()
 
-train_binary_hate, test_binary_hate = split_dataset_binary(df = df, 
-                                                           test_size = 0.2, 
-                                                           augmentation = False)
+train_hate_type, test_hate_type = split_dataset_hate_type(df = df, 
+                                                          test_size = 0.2)
 
 # TEXT PREPROCESSING 
-train_binary_hate = preprocess_text(train_binary_hate, verbose=True)
-test_binary_hate = preprocess_text(test_binary_hate, verbose=True)
+train_hate_type = preprocess_text(train_hate_type, verbose=True)
+test_hate_type = preprocess_text(test_hate_type, verbose=True)
 
 # TRAINING
-X_train_binary_hate = train_binary_hate.comment_text.values
-y_train_binary_hate = train_binary_hate.has_hate.values
+X_train_hate_type = train_hate_type.comment_text.values
+y_train_hate_type = train_hate_type.loc[:, 'toxic':'identity_hate'].values
 
 # TESTING
-X_test_binary_hate = test_binary_hate.comment_text.values
-y_test_binary_hate = test_binary_hate.has_hate.values
+X_test_hate_type = test_hate_type.comment_text.values
+y_test_hate_type = test_hate_type.loc[:, 'toxic':'identity_hate'].values
 
 # TOKENIATION AND PUDDING
 padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
-  vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pad(X_train = X_train_binary_hate,
-                                                                     X_test = X_test_binary_hate,
-                                                                     folder = 'binary_hate')
+  vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pad(X_train = X_train_hate_type,
+                                                                     X_test = X_test_hate_type,
+                                                                     folder = 'hate_type')
+
+weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.float32)
 
 def objective(trial):
 
     # HYPERPARAMETERS
     embedding_dim = trial.suggest_categorical("embedding_dim", [64, 128, 256])
-    lstm_units = trial.suggest_categorical("lstm_units", [32, 64, 128])
+    lstm_units = trial.suggest_categorical("lstm_units", [32, 48, 64, 96, 128])
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
-    dense_units = trial.suggest_categorical("dense_units", [8, 16])
+    dense_units = trial.suggest_categorical("dense_units", [8, 16, 24, 32])
 
-    learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-2, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [128, 256, 512, 1024])
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
+    batch_size = trial.suggest_categorical("batch_size", [64, 128, 256])
 
     if lstm_units >= embedding_dim:
         raise optuna.TrialPruned("LSTM units must be < embedding dim")
@@ -76,23 +77,24 @@ def objective(trial):
     # MODEL
     optimizer = tf.keras.optimizers.AdamW(learning_rate=learning_rate)
 
-    model = binary_hate_model(vocabulary_size = vocabulary_hate_size,
-                              max_len = max_len_hate,
-                              dropout = dropout,
-                              optimizer=optimizer,
-                              loss="binary_crossentropy",
-                              metrics = [
-                                'accuracy',
-                                tf.keras.metrics.Precision(name = 'precision'),
-                                tf.keras.metrics.Recall(name = 'recall'),
-                                F1Score(name='f1')
-                                ],
-                              lstm_units = lstm_units,
-                              embedding_dim = embedding_dim,
-                              dense_units = dense_units,
+    model = hate_type_model(
+      vocabulary_size = vocabulary_hate_size,
+      max_len = max_len_hate,
+      dropout = dropout,
+      optimizer=optimizer,
+      loss = weighted_binary_crossentropy(weights_tensor),
+      metrics = [
+        'accuracy',
+        tf.keras.metrics.AUC(name = 'auc', multi_label=True),
+        tf.keras.metrics.Precision(name = 'precision'),
+        tf.keras.metrics.Recall(name = 'recall'),
+        F1Score(name='f1')
+        ],
+      lstm_units = lstm_units,
+      embedding_dim = embedding_dim,
+      dense_units = dense_units
     )
-
-
+      
     # CALLBACKS
     early_stop = EarlyStopping(
         monitor="val_f1",
@@ -114,16 +116,16 @@ def objective(trial):
     
     history = model.fit(
         padded_train_hate_sequences,
-        y_train_binary_hate,
+        y_train_hate_type,
         validation_split = 0.2,
         epochs=10,                  
         batch_size=batch_size,
-        class_weight = class_weights_hate(y_train_binary_hate),
         callbacks=[early_stop, reduce_lr]
     )
 
     y_pred_test = model.predict(padded_test_hate_sequences)
-    f1_test = f1_score(y_test_binary_hate, y_pred_test>=0.5)
+
+    f1_test = f1_score(y_test_hate_type, y_pred_test>=0.5, average='micro')
     print(f"Trial {trial.number} — F1 test (not used for tuning): {f1_test:.4f}")
 
     
@@ -150,7 +152,7 @@ if __name__ == "__main__":
     print(f"\033[92mBest F1 Score: {study.best_value:.4f}\033[0m")
 
     # Save best params
-    with open("results/binary_hate/best_hyperparams_binary_hate.json", "w") as f:
+    with open("results/hate_type/best_hyperparams_hate_type.json", "w") as f:
       json.dump({**study.best_params, "best_f1": study.best_value}, f, indent=4)
 
 
