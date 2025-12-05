@@ -66,7 +66,7 @@ def objective(trial):
 
     # HYPERPARAMETERS
     embedding_dim = trial.suggest_categorical("embedding_dim", [128, 256, 512])
-    lstm_units = trial.suggest_categorical("lstm_units", [64, 128, 256, 512])
+    lstm_units = trial.suggest_categorical("lstm_units", [128, 256, 512])
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
     dense_units = trial.suggest_categorical("dense_units", [64, 96, 128, 256])
 
@@ -102,7 +102,7 @@ def objective(trial):
     # CALLBACKS
     early_stop = EarlyStopping(
         monitor="val_loss",
-        patience=0,
+        patience=3,
         #mode="max",
         restore_best_weights=True,
         verbose=0
