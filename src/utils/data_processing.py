@@ -48,7 +48,7 @@ def preprocess_text(df: pd.DataFrame, text_col: str = "comment_text", verbose = 
 # ---------------------------------------------------
 
 
-def tokenization_and_pad(X_train, X_test, num_words: int = None, verbose = False, folder = None):
+def tokenization_and_pad(X_train, X_test, num_words: int = None, folder = None):
     """
     Performs tokenization and padding on training and test texts.
 
