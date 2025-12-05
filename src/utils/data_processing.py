@@ -75,24 +75,32 @@ def tokenization_and_pad(X_train, X_test, num_words: int = None, verbose = False
     # Determine the maximum length
     max_len = max(len(seq) for seq in train_sequences)
 
-    # Directroy
-    save_dir = f"models/{folder}"
-
     # Create directory if it does not exist
-    os.makedirs(save_dir, exist_ok=True)
+    os.makedirs(f"models/{folder}", exist_ok=True)
 
     # Save tokenizer parameters
-    save_param(f"models/{folder}/param_model_{folder}.json", "max_len", int(max_len))
+    save_param(f"models/{folder}/param_tokenizer_{folder}.json", 
+               "max_len", 
+               int(max_len))
 
     # Apply padding
     padded_train_sequences = pad_sequences(sequences=train_sequences, maxlen=max_len)
     padded_test_sequences = pad_sequences(sequences=test_sequences, maxlen=max_len)
 
-    # Calculate vocabulary size
-    vocabulary_size = len(tokenizer.word_counts) + 1  # +1 for padding token
+    # Effective vocabulary size (respects num_words)
+    if num_words is None:
+        vocabulary_size = len(tokenizer.word_index) + 1
+        save_param(f"models/{folder}/param_tokenizer_{folder}.json", 
+               "vocabulary_size", 
+               int(vocabulary_size))
+    else:
+        vocabulary_size = min(num_words, len(tokenizer.word_index)) + 1
+        save_param(f"models/{folder}/param_tokenizer_{folder}.json", 
+                "vocabulary_size", 
+                int(vocabulary_size))
 
     # Save the tokenizer
-    with open(os.path.join(save_dir, f"tokenizer_{folder}.pkl"), "wb") as f:
+    with open(os.path.join(f"models/{folder}", f"tokenizer_{folder}.pkl"), "wb") as f:
         pickle.dump(tokenizer, f)
       
     return padded_train_sequences, padded_test_sequences, max_len, vocabulary_size, tokenizer
