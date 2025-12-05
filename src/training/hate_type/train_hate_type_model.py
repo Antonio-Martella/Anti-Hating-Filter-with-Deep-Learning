@@ -41,9 +41,10 @@ tf.random.set_seed(SEED)
 df = load_dataset()
 
 # CLASS DISTRIBUTION
+#class_counts = df.loc[:, 'toxic':'identity_hate'].sum().sort_values(ascending=False)
 #binary_series = (df['sum_injurious'] >= 1).astype(int)
 #count = binary_series.value_counts().sort_index()
-#plot_class_distribution(count, folder='binary_hate')
+#plot_class_distribution(class_counts, folder='hate_type')
 
 train_hate_type, test_hate_type = split_dataset_hate_type(df = df, 
                                                           test_size = 0.2)

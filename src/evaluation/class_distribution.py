@@ -27,7 +27,10 @@ def plot_class_distribution(count, folder=None):
     plt.title('Distribution of class')
 
     if folder == 'binary_hate':
-        plt.xlabel('Hating (1) or not (0)')
+      plt.xlabel('Hating (1) or not (0)')
+    elif folder == 'hate_type':
+      plt.xlabel('Hating Category')
+      
     plt.ylabel('Count')
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
