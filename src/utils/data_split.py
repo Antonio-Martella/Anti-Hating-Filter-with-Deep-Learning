@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from evaluate import evaluation_class
+from evaluation import plot_class_distribution
 
 
 def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
@@ -9,8 +9,8 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
   df = df.copy()
   df['has_hate'] = (df['sum_injurious'] > 0).astype(int)
 
-  class_counts = df['has_hate'].value_counts().sort_index()
-  evaluation_class(count=class_counts, folder='binary_hate')
+  class_counts = df['has_hate'].sum().sort_values(ascending=False)
+  plot_class_distribution(count=class_counts, folder='binary_hate')
 
   train_df, test_df = train_test_split(
     df,
@@ -60,7 +60,7 @@ def split_dataset_hate_type(df, test_size=0.2):
   df_train = df_train[df_train["sum_injurious"] >= 1]
   df_test = df_test[df_test["sum_injurious"] >= 1]
 
-  class_counts = df_train.loc[:, 'toxic':'identity_hate'].value_counts().sort_index()
-  evaluation_class(count=class_counts, folder='hate_type')
+  class_counts = df_train.loc[:, 'toxic':'identity_hate'].sum().sort_values(ascending=False)
+  plot_class_distribution(count=class_counts, folder='hate_type')
 
   return df_train, df_test

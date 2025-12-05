@@ -4,7 +4,6 @@ from .model_evaluation import evaluate_model
 
 __all__ =[
   "plot_class_distribution",
-  "f1_score_optimization",
   "f1_score_optimization_thresholds",
   "evaluate_model"
 ]
