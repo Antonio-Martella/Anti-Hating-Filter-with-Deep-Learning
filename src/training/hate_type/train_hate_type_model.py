@@ -37,21 +37,16 @@ tf.random.set_seed(SEED)
 
 # -----------------------------------
 
-# LOADING AND PREPROCESSING OF THE TEXT CORPUS
+# LOADING DATASET
 df = load_dataset()
 
-# CLASS DISTRIBUTION
-#class_counts = df.loc[:, 'toxic':'identity_hate'].sum().sort_values(ascending=False)
-#binary_series = (df['sum_injurious'] >= 1).astype(int)
-#count = binary_series.value_counts().sort_index()
-#plot_class_distribution(class_counts, folder='hate_type')
-
+# SPLIT TRAINING/TESTING DATASET
 train_hate_type, test_hate_type = split_dataset_hate_type(df = df, 
                                                           test_size = 0.2)
 
 # TEXT PREPROCESSING 
-train_hate_type = preprocess_text(train_hate_type, verbose=True)
-test_hate_type = preprocess_text(test_hate_type, verbose=True)
+train_hate_type = preprocess_text(train_hate_type, verbose=False)
+test_hate_type = preprocess_text(test_hate_type, verbose=False)
 
 # TRAINING
 X_train_hate_type = train_hate_type.comment_text.values
@@ -69,9 +64,9 @@ padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
                                                                      folder = 'hate_type')
 
 weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.float32)
-np.save('results/hate_type/weights_tensor.npy', weights_tensor.numpy())
+np.save('models/hate_type/weights_tensor.npy', weights_tensor.numpy())
 
-with open('results/hate_type/best_hyperparams_hate_type.json', "r") as f:
+with open('models/hate_type/best_hyperparams_hate_type.json', "r") as f:
     best_hyperparams = json.load(f)
 
 # INSTANTIATE THE MODEL AND HYPERPARAMETERS
@@ -105,6 +100,8 @@ history_hate_binary = model_hate_type.fit(
    batch_size = best_hyperparams['batch_size'],
    callbacks = [callback_hate_type(), csv_logger_hate_type]
 )
+
+model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.keras')
 
 evaluate_model(
   model=model_hate_type, 
