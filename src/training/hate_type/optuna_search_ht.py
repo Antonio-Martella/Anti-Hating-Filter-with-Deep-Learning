@@ -73,10 +73,10 @@ def objective(trial):
     learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
     batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256, 512])
 
-    if lstm_units >= embedding_dim:
-      raise optuna.TrialPruned("LSTM units must be < embedding dim")
+    if lstm_units > embedding_dim:
+      raise optuna.TrialPruned("LSTM units must be <= embedding dim")
     elif dense_units >= lstm_units:
-      raise optuna.TrialPruned("Dense units must be < LSTM units")
+      raise optuna.TrialPruned("Dense units must be <= LSTM units")
 
     # MODEL
     optimizer = tf.keras.optimizers.AdamW(learning_rate=learning_rate)
@@ -122,7 +122,7 @@ def objective(trial):
         padded_train_hate_sequences,
         y_train_hate_type,
         validation_split = 0.2,
-        epochs=10,                  
+        epochs=8,                  
         batch_size=batch_size,
         callbacks=[early_stop, reduce_lr]
     )
