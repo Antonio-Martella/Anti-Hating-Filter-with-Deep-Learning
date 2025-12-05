@@ -22,11 +22,11 @@ from models import hate_type_model, weighted_binary_crossentropy, class_weights_
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-#os.environ["TF_DETERMINISTIC_OPS"] = '1'
-#os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
-#os.environ["OMP_NUM_THREADS"] = '1'
-#os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
-#os.environ["TF_NUM_INTEROP_THREADS"] = '1'
+os.environ["TF_DETERMINISTIC_OPS"] = '1'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
+os.environ["TF_NUM_INTEROP_THREADS"] = '1'
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -56,15 +56,17 @@ y_test_hate_type = test_hate_type.loc[:, 'toxic':'identity_hate'].values
 padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
   vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pad(X_train = X_train_hate_type,
                                                                      X_test = X_test_hate_type,
+                                                                     num_words = 10000,
                                                                      folder = 'hate_type')
 
 weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.float32)
+
 
 def objective(trial):
 
     # HYPERPARAMETERS
     embedding_dim = trial.suggest_categorical("embedding_dim", [128, 256, 512])
-    lstm_units = trial.suggest_categorical("lstm_units", [128, 256, 512])
+    lstm_units = trial.suggest_categorical("lstm_units", [64, 128, 256, 512])
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
     dense_units = trial.suggest_categorical("dense_units", [64, 96, 128, 256])
 
@@ -72,7 +74,9 @@ def objective(trial):
     batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256, 512])
 
     if lstm_units >= embedding_dim:
-        raise optuna.TrialPruned("LSTM units must be < embedding dim")
+      raise optuna.TrialPruned("LSTM units must be < embedding dim")
+    elif dense_units >= lstm_units:
+      raise optuna.TrialPruned("Dense units must be < LSTM units")
 
     # MODEL
     optimizer = tf.keras.optimizers.AdamW(learning_rate=learning_rate)
@@ -98,8 +102,8 @@ def objective(trial):
     # CALLBACKS
     early_stop = EarlyStopping(
         monitor="val_loss",
-        patience=3,
-        ##mode="max",
+        patience=0,
+        #mode="max",
         restore_best_weights=True,
         verbose=0
     )
@@ -127,7 +131,6 @@ def objective(trial):
 
     f1_test = f1_score(y_test_hate_type, y_pred_test>=0.5, average='micro')
     print(f"Trial {trial.number} — F1 test (not used for tuning): {f1_test:.4f}")
-
     
     # OPTUNA GOAL
     #val_f1 = max(history.history["val_f1"])
@@ -150,10 +153,10 @@ if __name__ == "__main__":
     print("\033[92m BEST HYPERPARAMETERS FOUND \033[0m")
     print("\033[92m───────────────────────────────────────────────\033[0m")
     print(study.best_params)
-    print(f"\033[92mBest F1 Score: {study.best_value:.4f}\033[0m")
+    print(f"\033[92mBest Loss: {study.best_value:.4f}\033[0m")
 
     # Save best params
-    with open("results/hate_type/best_hyperparams_hate_type.json", "w") as f:
-      json.dump({**study.best_params, "best_f1": study.best_value}, f, indent=4)
+    with open("models/hate_type/best_hyperparams_hate_type.json", "w") as f:
+      json.dump({**study.best_params}, f, indent=4)
 
 

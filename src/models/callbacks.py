@@ -31,13 +31,13 @@ def callback_hate_type():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
                                            factor = 0.8,           
-                                           patience = 3,            
+                                           patience = 1,            
                                            min_lr = 1e-6,           
                                            verbose = 0)
                                            #mode='max''')            
 
   early_stop = EarlyStopping(monitor = 'val_loss',         
-                             patience = 5,               
+                             patience = 1,               
                              restore_best_weights = True,  
                              verbose = 0)
                              #mode='max''')

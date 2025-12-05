@@ -1,0 +1,8 @@
+{
+    "best_thresholds_toxic": 0.7114078998565674,
+    "best_thresholds_severe_toxic": 0.07289443910121918,
+    "best_thresholds_obscene": 0.2806062698364258,
+    "best_thresholds_threat": 0.030496349558234215,
+    "best_thresholds_insult": 0.37158432602882385,
+    "best_thresholds_identity_hate": 0.143153578042984
+}

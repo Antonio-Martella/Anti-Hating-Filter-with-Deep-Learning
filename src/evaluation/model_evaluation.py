@@ -11,53 +11,40 @@ from sklearn.metrics import (
     f1_score
 )
 
-from .f1_threshold_optimization import f1_score_optimization
+from .f1_threshold_optimization import f1_score_optimization, f1_score_optimization_thresholds
 from .class_distribution import plot_class_distribution
 
 
-def evaluate_model(model, X_test, y_test, folder=None):
 
-    '''
-    Evaluates a trained model on a test set using an optimized threshold.
-    Computes performance metrics, saves a classification report and a confusion matrix (for binary tasks).
+def evaluate_model(model, X_padded, y_true, labels, folder = None):
 
-    Parameters
-    ----------
-    model : keras.Model
-        The trained Keras model to evaluate.
-    X_test : array-like
-        Input features for the test set (e.g., padded sequences for NLP models).
-    y_test : array-like
-        True labels corresponding to X_test (binary or multi-class).
-    folder : str, optional
-        Subfolder of "results/" where metrics and figures will be saved (e.g., 'binary_hate').
+  # best threshold
+  y_pred = model.predict(X_padded)
+  optimal_thresholds = f1_score_optimization_thresholds(y_true, y_pred, labels, folder)
 
-    Output
-    ------
-    - CSV file with precision, recall, F1-score, and support: "results/{folder}/metrics_report_on_test.csv"
-    - PNG confusion matrix for binary classification: "results/{folder}/confusion_matrix.png"
-    '''
+  # result
+  n_classes = len(labels)
+  metrics_data = [] 
 
-    y_pred = model.predict(X_test)
+  for i in range(n_classes):
+    label = labels[i]
+    optimal_threshold = optimal_thresholds[label]
 
-    optimal_threshold = f1_score_optimization(y_test, y_pred, folder)
-    y_pred_opt = (y_pred >= optimal_threshold).astype(int).flatten()
+    y_pred_opt = (y_pred[:, i] >= optimal_threshold).astype(int)
 
-    report = classification_report(y_test, y_pred_opt, output_dict=True)
-    report_df = pd.DataFrame(report).transpose()
+    acc = accuracy_score(y_true[:, i], y_pred_opt)
+    prec = precision_score(y_true[:, i], y_pred_opt, zero_division = 0)
+    rec = recall_score(y_true[:, i], y_pred_opt, zero_division = 0)
+    f1 = f1_score(y_true[:, i], y_pred_opt, zero_division = 0)
+    metrics_data.append({'Classe': label,
+                         'Accuracy': acc,
+                         'Precision': prec,
+                         'Recall': rec,
+                         'F1': f1})
 
-    os.makedirs(f"results/{folder}", exist_ok=True)
-    report_df.to_csv(f"results/{folder}/metrics_report_on_test.csv", index=True)
+  metrics_df = pd.DataFrame(metrics_data)
 
-    # Confusion matrix for binary model
-    if folder == 'binary_hate':
-        cm = confusion_matrix(y_test, y_pred_opt)
-        plt.figure(figsize=(5, 4))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                    xticklabels=["No Hate", "Hate"],
-                    yticklabels=["No Hate", "Hate"])
-        plt.xlabel("Predicted")
-        plt.ylabel("True")
-        plt.title("Confusion Matrix")
-        plt.savefig(f"results/{folder}/confusion_matrix.png")
-        plt.close()
+  path = f"results/{folder}"
+  os.makedirs(path, exist_ok=True)
+  metrics_df.to_csv(f"{path}/metrics_report_on_test.csv", index=True)
+  
