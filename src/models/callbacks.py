@@ -3,15 +3,15 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCh
 
 def callback_binary_hate():
 
-  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_f1',  
-                                           factor = 0.5,          
-                                           patience = 2,         
+  reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_f1',
+                                           factor = 0.5,
+                                           patience = 2,
                                            min_lr = 1e-6,        
                                            verbose = 0,
-                                           mode='max')           
+                                           mode='max')
 
-  early_stop = EarlyStopping(monitor = 'val_f1',       
-                             patience = 3,                 
+  early_stop = EarlyStopping(monitor = 'val_f1',
+                             patience = 3,
                              restore_best_weights = True,
                              verbose = 0,
                              mode='max')
@@ -30,15 +30,15 @@ def callback_binary_hate():
 def callback_hate_type():
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
-                                           factor = 0.8,           
-                                           patience = 2,            
-                                           min_lr = 1e-6,           
+                                           factor = 0.8,
+                                           patience = 2,
+                                           min_lr = 1e-6,
                                            verbose = 0)
                                            #mode='max''')            
 
-  early_stop = EarlyStopping(monitor = 'val_loss',         
-                             patience = 3,               
-                             restore_best_weights = True,  
+  early_stop = EarlyStopping(monitor = 'val_loss',
+                             patience = 5,
+                             restore_best_weights = True,
                              verbose = 0)
                              #mode='max''')
 
