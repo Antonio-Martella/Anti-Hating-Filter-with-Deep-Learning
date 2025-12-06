@@ -9,19 +9,11 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from tensorflow.keras.models import load_model
-<<<<<<< HEAD
-from data_utils import  preprocess_text
+from data_utils import preprocess_text
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
-from models import weighted_binary_crossentropy
-=======
-#from model import weighted_binary_crossentropy
-from data_utils import  preprocess_text
-from tensorflow.keras.preprocessing.sequence import pad_sequences
-
-from models import AttentionLayer
-from utils import F1Score
->>>>>>> 6a61ec922e27f55239dbf64c4dbb510da2c9db32
+from models import weighted_binary_crossentropy, AttentionLayer
+from utils import F1Score 
 
 
 # -----------------------------
@@ -30,18 +22,17 @@ from utils import F1Score
 # LOAD THE MODEL
 print("\033[92m------ First Model ------\033[0m")
 try:
-<<<<<<< HEAD
-  model_binary_hate = load_model('models/binary_hate/model_hate_binary.h5')
-=======
-  model_binary_hate = load_model('models/binary_hate/model_hate_binary.keras')
-  custom_objects={
+  model_binary_hate = load_model(
+    'models/binary_hate/model_hate_binary.h5',
+    custom_objects={
         "AttentionLayer": AttentionLayer
-        #"F1Score": F1Score
-        }
->>>>>>> 6a61ec922e27f55239dbf64c4dbb510da2c9db32
-  print(f"\033[92mFirst Model (model_binary_hate.keras) loaded successfully!\033[0m")
+       # "F1Score": F1Score 
+    },
+    compile=False
+  )
+  print(f"\033[92mFirst Model (model_binary_hate.h5) loaded successfully!\033[0m")
 except Exception as e:
-  print(f"\033[91mError loading First Model (model_binary_hate.keras): {e}!\033[0m")
+  print(f"\033[91mError loading First Model (model_binary_hate.h5): {e}!\033[0m")
 
 # LOAD THE TOKENIZER 
 try:
@@ -106,8 +97,6 @@ try:
 except Exception as e:
   print("Error loading second model tokenizer:", e)
 
-
-<<<<<<< HEAD
 while True:
     text = input("Inserisci una frase ('exit' per uscire): ")
 

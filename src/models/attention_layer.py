@@ -1,7 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Layer
 from tensorflow.keras import backend as K
-
 from keras.saving import register_keras_serializable
 
 @register_keras_serializable(package="Custom")
