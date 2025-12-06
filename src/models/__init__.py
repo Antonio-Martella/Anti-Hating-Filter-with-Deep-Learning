@@ -3,6 +3,7 @@ from .callbacks import callback_binary_hate, callback_hate_type
 from .losses import weighted_binary_crossentropy
 from .class_weights import class_weights_hate, compute_class_weights
 from .losses import weighted_binary_crossentropy
+from .attention_layer import AttentionLayer
 
 __all__ = [
     "binary_hate_model",
@@ -12,5 +13,6 @@ __all__ = [
     "weighted_binary_crossentropy",
     "class_weights_hate",
     "compute_class_weights", 
-    "weighted_binary_crossentropy"
+    "weighted_binary_crossentropy",
+    "AttentionLayer"
 ]
