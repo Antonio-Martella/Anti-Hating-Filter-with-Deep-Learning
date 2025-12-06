@@ -9,10 +9,10 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
   df = df.copy()
   df['has_hate'] = (df['sum_injurious'] > 0).astype(int)
 
-  class_counts = df['has_hate'].sum().sort_values(ascending=False)
+  class_counts = df['has_hate'].value_counts().sort_values(ascending=False)
   plot_class_distribution(count=class_counts, folder='binary_hate')
 
-  train_df, test_df = train_test_split(
+  df_train, df_test = train_test_split(
     df,
     test_size = test_size,
     random_state = 1,
@@ -20,15 +20,14 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
     shuffle = True
   )
 
-
-  path = 'data/binary_hate'
+  path = 'data/train_and_test'
   os.makedirs(path, exist_ok=True)
-  (train_df.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/train_binary_hate.csv", index=False))
-  (test_df.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/test_binary_hate.csv", index=False))
+  (df_train.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/train_dataset.csv", index=False))
+  (df_test.drop(columns='has_hate', errors="ignore").to_csv(f"{path}/test_dataset.csv", index=False))
 
   if augmentation:
     augmented_rows = []
-    for _, row in train_df.iterrows():
+    for _, row in df_train.iterrows():
       s = int(row['sum_injurious'])
       if s <= 1:
         repeat_n = 1
@@ -39,15 +38,15 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
     train_aug = pd.DataFrame(augmented_rows)
     train_aug = train_aug.sample(frac=1, random_state=1).reset_index(drop=True)
   else:
-      train_aug = train_df.copy()
+      train_aug = df_train.copy()
 
-  return train_aug, test_df
+  return train_aug, df_test
 
 
 #------------------------------------------------------------------
 
 
-def split_dataset_hate_type(df, test_size=0.2):
+def split_dataset_hate_type():
 
   path = 'data/train_and_test'
 

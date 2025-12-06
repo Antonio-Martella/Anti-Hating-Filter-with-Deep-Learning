@@ -24,11 +24,11 @@ from models import binary_hate_model, class_weights_hate
 SEED = 42
 
 os.environ["PYTHONHASHSEED"] = str(SEED)
-#os.environ["TF_DETERMINISTIC_OPS"] = '1'
-#os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
-#os.environ["OMP_NUM_THREADS"] = '1'
-#os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
-#os.environ["TF_NUM_INTEROP_THREADS"] = '1'
+os.environ["TF_DETERMINISTIC_OPS"] = '1'
+os.environ["TF_CUDNN_DETERMINISTIC"] = '1'
+os.environ["OMP_NUM_THREADS"] = '1'
+os.environ["TF_NUM_INTRAOP_THREADS"] = '1'
+os.environ["TF_NUM_INTEROP_THREADS"] = '1'
 
 random.seed(SEED)
 np.random.seed(SEED)
@@ -44,8 +44,8 @@ train_binary_hate, test_binary_hate = split_dataset_binary(df = df,
                                                            augmentation = False)
 
 # TEXT PREPROCESSING 
-train_binary_hate = preprocess_text(train_binary_hate, verbose=True)
-test_binary_hate = preprocess_text(test_binary_hate, verbose=True)
+train_binary_hate = preprocess_text(train_binary_hate, verbose=False)
+test_binary_hate = preprocess_text(test_binary_hate, verbose=False)
 
 # TRAINING
 X_train_binary_hate = train_binary_hate.comment_text.values
@@ -59,21 +59,24 @@ y_test_binary_hate = test_binary_hate.has_hate.values
 padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
   vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pad(X_train = X_train_binary_hate,
                                                                      X_test = X_test_binary_hate,
+                                                                     num_words = 10000,
                                                                      folder = 'binary_hate')
 
 def objective(trial):
 
     # HYPERPARAMETERS
-    embedding_dim = trial.suggest_categorical("embedding_dim", [128, 256])
-    lstm_units = trial.suggest_categorical("lstm_units", [32, 48, 64, 96])
+    embedding_dim = trial.suggest_categorical("embedding_dim", [128, 256, 512])
+    lstm_units = trial.suggest_categorical("lstm_units", [128, 256, 512])
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
-    dense_units = trial.suggest_categorical("dense_units", [8, 16])
+    dense_units = trial.suggest_categorical("dense_units", [8, 16, 32, 64, 128])
 
-    learning_rate = trial.suggest_float("learning_rate", 1e-4, 1e-1, log=True)
-    batch_size = trial.suggest_categorical("batch_size", [512, 1024])
+    learning_rate = trial.suggest_float("learning_rate", 1e-5, 1e-1, log=True)
+    batch_size = trial.suggest_categorical("batch_size", [256, 512, 1024])
 
-    if lstm_units >= embedding_dim:
-        raise optuna.TrialPruned("LSTM units must be < embedding dim")
+    if lstm_units > embedding_dim:
+      raise optuna.TrialPruned("LSTM units must be < embedding dim")
+    elif dense_units >= lstm_units:
+      raise optuna.TrialPruned("Dense units must be <= LSTM units")
 
     # MODEL
     optimizer = tf.keras.optimizers.AdamW(learning_rate=learning_rate)
@@ -106,7 +109,7 @@ def objective(trial):
 
     reduce_lr = ReduceLROnPlateau(
         monitor="val_f1",
-        factor=0.5,
+        factor=0.8,
         patience=2,
         min_lr=1e-6,
         mode="max",
@@ -118,7 +121,7 @@ def objective(trial):
         padded_train_hate_sequences,
         y_train_binary_hate,
         validation_split = 0.2,
-        epochs=7,                  
+        epochs=15,                  
         batch_size=batch_size,
         class_weight = class_weights_hate(y_train_binary_hate),
         callbacks=[early_stop, reduce_lr]
@@ -143,7 +146,7 @@ if __name__ == "__main__":
     )
 
     print("\033[92mStarting hyperparameter search...\033[0m")
-    study.optimize(objective, n_trials=10)
+    study.optimize(objective, n_trials=25)
 
     print("\033[92m\n───────────────────────────────────────────────\033[0m")
     print("\033[92m BEST HYPERPARAMETERS FOUND \033[0m")
@@ -152,7 +155,7 @@ if __name__ == "__main__":
     print(f"\033[92mBest F1 Score: {study.best_value:.4f}\033[0m")
 
     # Save best params
-    with open("results/binary_hate/best_hyperparams_binary_hate.json", "w") as f:
-      json.dump({**study.best_params, "best_f1": study.best_value}, f, indent=4)
+    with open("models/hate_binary/best_hyperparams_hate_type.json", "w") as f:
+      json.dump({**study.best_params}, f, indent=4)
 
 
