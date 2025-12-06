@@ -65,8 +65,8 @@ weights_tensor = tf.constant(compute_class_weights(y_train_hate_type), dtype=tf.
 def objective(trial):
 
     # HYPERPARAMETERS
-    embedding_dim = trial.suggest_categorical("embedding_dim", [128, 256, 512, 1024])
-    lstm_units = trial.suggest_categorical("lstm_units", [128, 256, 512, 1024])
+    embedding_dim = trial.suggest_categorical("embedding_dim", [128, 256, 512])
+    lstm_units = trial.suggest_categorical("lstm_units", [128, 256, 512])
     dropout = trial.suggest_float("dropout", 0.1, 0.5)
     dense_units = trial.suggest_categorical("dense_units", [32, 64, 96, 128, 256])
 
@@ -74,7 +74,7 @@ def objective(trial):
     batch_size = trial.suggest_categorical("batch_size", [32, 64, 128, 256, 512])
 
     if lstm_units > embedding_dim:
-      raise optuna.TrialPruned("LSTM units must be <= embedding dim")
+      raise optuna.TrialPruned("LSTM units must be < embedding dim")
     elif dense_units >= lstm_units:
       raise optuna.TrialPruned("Dense units must be <= LSTM units")
 
@@ -122,7 +122,7 @@ def objective(trial):
         padded_train_hate_sequences,
         y_train_hate_type,
         validation_split = 0.2,
-        epochs=20,                  
+        epochs=15,                  
         batch_size=batch_size,
         callbacks=[early_stop, reduce_lr]
     )
@@ -147,7 +147,7 @@ if __name__ == "__main__":
     )
 
     print("\033[92mStarting hyperparameter search...\033[0m")
-    study.optimize(objective, n_trials=20)
+    study.optimize(objective, n_trials=25)
 
     print("\033[92m\n───────────────────────────────────────────────\033[0m")
     print("\033[92m BEST HYPERPARAMETERS FOUND \033[0m")
