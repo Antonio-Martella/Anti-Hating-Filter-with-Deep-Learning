@@ -1,8 +1,8 @@
 {
-    "best_thresholds_toxic": 0.805404007434845,
-    "best_thresholds_severe_toxic": 0.29351434111595154,
-    "best_thresholds_obscene": 0.43186455965042114,
-    "best_thresholds_threat": 0.19234301149845123,
-    "best_thresholds_insult": 0.39457112550735474,
-    "best_thresholds_identity_hate": 0.196041539311409
+    "best_thresholds_toxic": 0.18117649853229523,
+    "best_thresholds_severe_toxic": 0.19873660802841187,
+    "best_thresholds_obscene": 0.6319770216941833,
+    "best_thresholds_threat": 0.011909331195056438,
+    "best_thresholds_insult": 0.49221307039260864,
+    "best_thresholds_identity_hate": 0.2769756317138672
 }
