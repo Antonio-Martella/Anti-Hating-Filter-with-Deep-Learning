@@ -2,6 +2,7 @@ import re
 import os
 import pandas as pd
 import pickle
+import numpy as np
 
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
@@ -73,7 +74,9 @@ def tokenization_and_pad(X_train, X_test, num_words: int = None, folder = None):
     test_sequences = tokenizer.texts_to_sequences(X_test)
 
     # Determine the maximum length
-    max_len = max(len(seq) for seq in train_sequences)
+    #max_len = max(len(seq) for seq in train_sequences)
+    max_len = int(np.percentile([len(seq) for seq in train_sequences], 95))
+
 
     # Create directory if it does not exist
     os.makedirs(f"models/{folder}", exist_ok=True)
