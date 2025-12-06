@@ -47,8 +47,8 @@ train_binary_hate, test_binary_hate = split_dataset_binary(df = df,
                                                            augmentation = False)
 
 # TEXT PREPROCESSING 
-train_binary_hate = preprocess_text(train_binary_hate, verbose=True)
-test_binary_hate = preprocess_text(test_binary_hate, verbose=True)
+train_binary_hate = preprocess_text(train_binary_hate, verbose=False)
+test_binary_hate = preprocess_text(test_binary_hate, verbose=False)
 
 # TRAINING
 X_train_binary_hate = train_binary_hate.comment_text.values
@@ -61,11 +61,12 @@ y_test_binary_hate = test_binary_hate.has_hate.values
 padded_train_hate_sequences, padded_test_hate_sequences, max_len_hate, \
   vocabulary_hate_size, tokenizer_binary_hate = tokenization_and_pad(X_train = X_train_binary_hate,
                                                                      X_test = X_test_binary_hate,
+                                                                     num_words = 10000,
                                                                      folder = 'binary_hate')
 
 print(max_len_hate)
 
-with open('results/binary_hate/best_hyperparams_binary_hate.json', "r") as f:
+with open('models/binary_hate/best_hyperparams_binary_hate.json', "r") as f:
     best_hyperparams = json.load(f)
 
 # INSTANTIATE THE MODEL AND HYPERPARAMETERS
@@ -97,11 +98,11 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
 
 # COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.keras')
-#model_hate_binary.save('models/binary_hate/model_hate_binary.keras')
 
-evaluate_model(model_hate_binary,
-               padded_test_hate_sequences, 
-               y_test_binary_hate, 
-               folder='binary_hate')
-
-#model_hate_binary.evaluate(padded_test_hate_sequences, y_test_binary_hate)
+evaluate_model(
+  model=model_hate_binary, 
+  X_padded=padded_test_hate_sequences, 
+  y_true=y_test_binary_hate,
+  labels=['has_hate'],
+  folder = 'binary_hate'
+)
