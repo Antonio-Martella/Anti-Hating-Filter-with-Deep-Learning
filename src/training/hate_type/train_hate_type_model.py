@@ -41,8 +41,7 @@ tf.random.set_seed(SEED)
 df = load_dataset()
 
 # SPLIT TRAINING/TESTING DATASET
-train_hate_type, test_hate_type = split_dataset_hate_type(df = df, 
-                                                          test_size = 0.2)
+train_hate_type, test_hate_type = split_dataset_hate_type()
 
 # TEXT PREPROCESSING 
 train_hate_type = preprocess_text(train_hate_type, verbose=False)

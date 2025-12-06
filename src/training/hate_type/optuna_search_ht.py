@@ -74,9 +74,10 @@ def objective(trial):
     elif dense_units >= lstm_units:
       raise optuna.TrialPruned("Dense units must be <= LSTM units")
 
-    # MODEL
+    # OPTIMIZER
     optimizer = tf.keras.optimizers.AdamW(learning_rate=learning_rate)
-
+    
+    # MODEL
     model = hate_type_model(
       vocabulary_size = vocabulary_hate_size,
       max_len = max_len_hate,
@@ -99,7 +100,6 @@ def objective(trial):
     early_stop = EarlyStopping(
         monitor="val_loss",
         patience=3,
-        #mode="max",
         restore_best_weights=True,
         verbose=0
     )
@@ -109,11 +109,10 @@ def objective(trial):
         factor=0.8,
         patience=2,
         min_lr=1e-6,
-        #mode="max",
         verbose=0
     )
 
-    
+    # FIT
     history = model.fit(
         padded_train_hate_sequences,
         y_train_hate_type,
@@ -123,22 +122,23 @@ def objective(trial):
         callbacks=[early_stop, reduce_lr]
     )
 
+    # PREDICTION
     y_pred_test = model.predict(padded_test_hate_sequences)
 
+    # F1 SCORE EVALUATION ON TEST SET
     f1_test = f1_score(y_test_hate_type, y_pred_test>=0.5, average='micro')
     print(f"Trial {trial.number} — F1 test (not used for tuning): {f1_test:.4f}")
-    
-    # OPTUNA GOAL
-    #val_f1 = max(history.history["val_f1"])
 
+    # GOAL
     val_loss = min(history.history["val_loss"])
+
     return val_loss
 
 
 if __name__ == "__main__":
     study = optuna.create_study(
         direction="minimize",
-        study_name="hate_binary_opt",
+        study_name="hate_type_opt",
         sampler=optuna.samplers.TPESampler(seed=SEED)
     )
 
