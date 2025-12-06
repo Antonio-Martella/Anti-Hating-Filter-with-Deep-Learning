@@ -14,7 +14,7 @@ def callback_binary_hate():
                              restore_best_weights = True,
                              verbose = 0)
 
-  checkpoint = ModelCheckpoint('models/binary_hate/model_hate_binary.keras',
+  checkpoint = ModelCheckpoint('models/binary_hate/model_hate_binary.h5',
                                monitor = 'val_loss',
                                save_best_only = True,
                                save_weights_only = False,
@@ -37,7 +37,7 @@ def callback_hate_type():
                              restore_best_weights = True,
                              verbose = 0)
 
-  checkpoint = ModelCheckpoint(f'models/hate_type/model_hate_type.keras',
+  checkpoint = ModelCheckpoint(f'models/hate_type/model_hate_type.h5',
                                monitor = 'val_loss',
                                save_best_only = True,
                                save_weights_only = False,
