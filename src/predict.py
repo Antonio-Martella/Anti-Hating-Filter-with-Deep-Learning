@@ -9,10 +9,19 @@ import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from tensorflow.keras.models import load_model
+<<<<<<< HEAD
 from data_utils import  preprocess_text
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 from models import weighted_binary_crossentropy
+=======
+#from model import weighted_binary_crossentropy
+from data_utils import  preprocess_text
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+from models import AttentionLayer
+from utils import F1Score
+>>>>>>> 6a61ec922e27f55239dbf64c4dbb510da2c9db32
 
 
 # -----------------------------
@@ -21,7 +30,15 @@ from models import weighted_binary_crossentropy
 # LOAD THE MODEL
 print("\033[92m------ First Model ------\033[0m")
 try:
+<<<<<<< HEAD
   model_binary_hate = load_model('models/binary_hate/model_hate_binary.h5')
+=======
+  model_binary_hate = load_model('models/binary_hate/model_hate_binary.keras')
+  custom_objects={
+        "AttentionLayer": AttentionLayer
+        #"F1Score": F1Score
+        }
+>>>>>>> 6a61ec922e27f55239dbf64c4dbb510da2c9db32
   print(f"\033[92mFirst Model (model_binary_hate.keras) loaded successfully!\033[0m")
 except Exception as e:
   print(f"\033[91mError loading First Model (model_binary_hate.keras): {e}!\033[0m")
@@ -90,6 +107,7 @@ except Exception as e:
   print("Error loading second model tokenizer:", e)
 
 
+<<<<<<< HEAD
 while True:
     text = input("Inserisci una frase ('exit' per uscire): ")
 
@@ -132,15 +150,22 @@ import pandas as pd
 
 # Carica dataset
 df = pd.read_csv('data/train_and_test/test_dataset.csv')
+=======
+df = pd.read_csv('data/test_comments.csv')
+>>>>>>> 6a61ec922e27f55239dbf64c4dbb510da2c9db32
 df = preprocess_text(df, text_col="comment_text")
 
 # Dividi tra hate / non-hate
 df_hate = df[df["sum_injurious"] > 0]
 df_nonhate = df[df["sum_injurious"] == 0]
 
+<<<<<<< HEAD
 # Seleziona 10 esempi casuali per ciascun gruppo
 sample_hate = df_hate.sample(n=10, random_state=42)
 sample_nonhate = df_nonhate.sample(n=10, random_state=42)
+=======
+X_sequences = tokenizer_binary_hate.texts_to_sequences(X["comment_text"].astype(str))
+>>>>>>> 6a61ec922e27f55239dbf64c4dbb510da2c9db32
 
 # Unisci in un unico df
 samples = pd.concat([sample_hate, sample_nonhate]).reset_index(drop=True)
@@ -154,8 +179,12 @@ padded_sequences = pad_sequences(
     maxlen=int(max_len_binary_hate)
 )
 
+<<<<<<< HEAD
 # Predizioni
 y_pred = model_binary_hate.predict(padded_sequences)
+=======
+y_pred = model_binary_hate.predict(padded_X_sequences)
+>>>>>>> 6a61ec922e27f55239dbf64c4dbb510da2c9db32
 y_pred_opt = (y_pred >= best_threshold_binary_hate["best_thresholds_has_hate"]).astype(int).flatten()
 
 # --- STAMPA RISULTATI ---
