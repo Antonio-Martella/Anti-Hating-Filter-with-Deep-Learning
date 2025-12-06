@@ -34,15 +34,11 @@ tf.random.set_seed(SEED)
 
 # -----------------------------------
 
-#print("Loading dataset...")
-df = load_dataset()
-
-train_hate_type, test_hate_type = split_dataset_hate_type(df = df, 
-                                                          test_size = 0.2)
+train_hate_type, test_hate_type = split_dataset_hate_type()
 
 # TEXT PREPROCESSING 
-train_hate_type = preprocess_text(train_hate_type, verbose=True)
-test_hate_type = preprocess_text(test_hate_type, verbose=True)
+train_hate_type = preprocess_text(train_hate_type, verbose=False)
+test_hate_type = preprocess_text(test_hate_type, verbose=False)
 
 # TRAINING
 X_train_hate_type = train_hate_type.comment_text.values

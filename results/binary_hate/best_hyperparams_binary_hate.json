@@ -1,9 +1,0 @@
-{
-    "embedding_dim": 256,
-    "lstm_units": 64,
-    "dropout": 0.24338629141770907,
-    "dense_units": 16,
-    "learning_rate": 0.0074112997810832455,
-    "batch_size": 512,
-    "best_f1": 0.7880966067314148
-}
