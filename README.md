@@ -76,6 +76,24 @@ Reasons for this design:
 
 2. **Efficiency and robustness**: A single-layer BiLSTM with attention provides an optimal balance between expressive power and low inference cost, suitable for real-time toxicity detection.
 
+
+### Multilabel Toxicity Classification Model
+**Goal**: identify which specific categories of toxicity are present in a comment.
+
+**Architecture**:
+
+- Embedding layer
+
+- Bidirectional LSTM
+
+- Dense
+
+- Multi-head dense output (6 sigmoid units, one per class)
+
+NB: Custom weighted loss (to compensate class imbalance)
+
+
+
 ## Struttura del progetto
 
 La struttura del repository è organizzata per separare in modo chiaro i diversi componenti del workflow di Deep Learning:
