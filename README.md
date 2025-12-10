@@ -152,7 +152,10 @@ pip install -r requirements_macos_arm.txt
 ## Usage
 
 ### Training and Tuning from Scratch
-If you want to optimize hyperparameters and train models from scratch:
+Training the models from scratch, and especially performing hyperparameter optimization, requires significant computational resources. For this reason, we recommend using a dedicated GPU or cloud-based solutions.
+The simplest option is Google Colab, which is the environment used during development. With an L4 GPU, the full hyperparameter search and model training complete in approximately one hour (using the search ranges provided in this repository).
+
+If you want to reproduce the full workflow from scratch, including hyperparameter optimization and training (all seeds are fixed to ensure reproducibility), you can simply run:
 
 **Tuning degli iperparametri**
 ```bash
