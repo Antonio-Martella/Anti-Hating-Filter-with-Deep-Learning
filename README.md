@@ -1,27 +1,27 @@
-# Deep Learning Project – Toxic Comment Classification
+rning Project – Toxic Comment Classification
 
 ## Overview
-Questo progetto nasce con l’obiettivo di sviluppare un sistema di classificazione automatica dei commenti tossici utilizzando tecniche di Deep Learning applicate al Natural Language Processing (NLP).
+This project was born with the aim of developing an automatic classification system for toxic comments using Deep Learning techniques applied to Natural Language Processing (NLP).
 
-L’intero workflow – dalla preparazione del dataset alla progettazione dei modelli, dall’ottimizzazione degli iperparametri alla valutazione finale – è stato progettato e implementato da me, con l’intento di mostrare competenze solide in:
+The entire workflow – from dataset preparation to model design, from hyperparameter optimization to final evaluation – was designed and implemented by me, with the aim of demonstrating solid skills in:
  
-- Machine Learning e Deep Learning
+- Machine Learning and Deep Learning
 
-- NLP e text preprocessing
+- NLP and Text Preprocessing
 
-- Architetture basate su reti ricorrenti (LSTM)
+- Recurrent Network (LSTM) Architectures
 
-- Ottimizzazione, validazione e gestione dei modelli
+- Model Optimization, Validation, and Management
 
-- Buone pratiche di MLOps a livello progettuale (struttura repository, riproducibilità, separazione dei moduli)
+- MLOps Best Practices at the Design Level (Repository Structure, Reproducibility, Module Separation)
 
-## Obiettivo del progetto
+## Project objective
 
-L’obiettivo è costruire un modello robusto in grado di:
+The goal is to build a robust model capable of:
 
-1. Identificare se un commento contiene contenuti d’odio (classificazione binaria).
+1. Identifying whether a comment contains hate content (binary classification).
 
-2. Classificare le specifiche categorie di tossicità presenti nel commento (classificazione multilabel), tra cui:
+2. Classifying the specific toxicity categories present in the comment (multilabel classification), including:
 
 	- toxic
 
@@ -35,24 +35,41 @@ L’obiettivo è costruire un modello robusto in grado di:
 
 	- obscene
 
-## Architettura del sistema
+## System Architecture
 
-Il sistema è organizzato in due stadi:
+The system is organized into two stages:
 
-1. Modello Binario
+1. Binary Model
 
-	- Distingue commenti neutri da commenti che presentano qualunque tipo di tossicità.
+	- Distinguishes neutral comments from comments with any type of toxicity.
 
-	- Ottimizzato per ridurre i falsi negativi (non perdere commenti tossici).
+	- Optimized to reduce false negatives (don't miss toxic comments).
 
+2. Multilabel Model
 
-2. Modello Multilabel
+	- It is activated only when the first model reports the presence of toxicity.
 
-	- Viene attivato solo quando il primo modello segnala la presenza di tossicità.
+	- It is trained exclusively on toxic comments, to distinguish between different categories.
 
-	- È addestrato esclusivamente sui commenti tossici, per distinguere le diverse categorie.
+This "cascade" structure improves performance, efficiency, and interpretability of results.
 
-Questa struttura “a cascata” migliora performance, efficienza e interpretabilità dei risultati.
+## Neural Network Architecture and Design Rationale
+The design of both models was driven by the characteristics of the task, the linguistic nature of short informal comments, and the need to maximize robustness while keeping computational efficiency.
+
+### Binary Classification Model
+
+Goal: detect whether a comment contains any toxic content.
+
+Architecture:
+
+- Embedding layer 
+
+- Bidirectional LSTM
+
+- Dense
+
+- Dense classifiers
+
 
 
 ## Struttura del progetto
@@ -139,4 +156,5 @@ Se vuoi risparmiare tempo e non allenare i modelli da zero, puoi scaricare i mod
 Per eseguire l'inferenza su un commento di esempio:
 ```bash
 python src/inference/predict.py --text "You are an idiot"
+
 
