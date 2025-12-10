@@ -211,7 +211,4 @@ Behaviors:
 
 	- --input accepts either a full file path or just a filename. If only a filename is provided, the script assumes the file is located in data/.
 
-	- --output if not provided, the script automatically saves the output to:
-	```
-	results/<input_filename>_pred.csv
-	```
+	- --output if not provided, the script automatically saves the output t
