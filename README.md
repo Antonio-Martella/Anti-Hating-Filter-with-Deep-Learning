@@ -178,13 +178,13 @@ Hate type model
 python src/training/hate_type/train_hate_type_model.py
 ```
 
-### Usare modelli pre-addestrati
+### Using pre-trained models
 
-Se vuoi risparmiare tempo e non allenare i modelli da zero, puoi scaricare i modelli già addestrati e usarli direttamente per l’inferenza.
+If you want to save time and avoid training models from scratch, you can download pre-trained models and use them directly for inference.
 
-**Scarica i modelli dai link del Drive:**
-- [model_binary_hate.keras](https://drive.google.com/file/d/1o3QSmFB2EIus8QugOYzuapOQB81vP2Gl/view?usp=drive_link) → posizionalo in `models/binary_hate/`
-- `hate_type.keras` → posizionalo in `models/hate_type/`
+**Download the templates from the Drive links:**
+- [model_binary_hate.h5](https://drive.google.com/file/d/10c-YEeP1nxWQeWUiqdfj0MH9DumaghUV/view?usp=drive_link) → place it in `models/binary_hate/`
+- [model_hate_type.h5](https://drive.google.com/file/d/1osNGAY8DDs2SiC-a4sH0GtD6e0DBF52M/view?usp=drive_link) → place it in `models/hate_type/`
 
 ### Inferenza 
 Per eseguire l'inferenza su un commento di esempio:
