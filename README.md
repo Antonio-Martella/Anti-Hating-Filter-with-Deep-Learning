@@ -70,7 +70,7 @@ The design of both models was driven by the characteristics of the task, the lin
 
 - Dense classifiers
 
-Reasons for this design:
+**Reasons for this design**:
 
 1. **Sequential dependencies matter**: Toxic expressions often depend on the interplay of words and their local context. The Bidirectional LSTM captures long-range dependencies in both directions.
 
