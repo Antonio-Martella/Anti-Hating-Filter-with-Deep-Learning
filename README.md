@@ -209,7 +209,7 @@ python src/inference/predict_csv.py --input input_file_name.csv --output results
 ```
 Behaviors:
 
-	`--input`
+	- `--input`
 Accepts either a full file path or just a filename.
 If only a filename is provided, the script assumes the file is located in data/.
 
