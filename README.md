@@ -199,3 +199,20 @@ Both scripts use the same two-stage pipeline (binary detection + multilabel clas
 	Type a sentence and press Enter to get a prediction.  
 	Type exit to quit.  
 	The model prints the result directly in the terminal, showing the binary toxicity prediction (hate / not hate) and, when applicable, the six multilabel toxicity categories.
+
+2. **Inference on a CSV file**
+
+If you need to process multiple comments at once, you can run the batch inference script.
+The CSV must contain a single column with raw text comments (no headers required beyond the column name).
+```bash
+python src/inference/predict_csv.py --input input_file_name.csv --output results/output_file_name_pred.csv
+```
+Behaviors:
+
+	`--input`
+Accepts either a full file path or just a filename.
+If only a filename is provided, the script assumes the file is located in data/.
+
+--output
+If not provided, the script automatically saves the output to:
+
