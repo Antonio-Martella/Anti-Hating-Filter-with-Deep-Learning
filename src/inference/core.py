@@ -71,7 +71,7 @@ class HateModelInference:
 
 
 
-  def predict_text(self, text):
+  def predict_text(self, text, verbose=True):
 
     # DATA CLEANING
     text = clean(text)
@@ -84,8 +84,7 @@ class HateModelInference:
     pred = int(prob >= self.thresholds_bh["best_thresholds_has_hate"])
 
     if pred == 0:
-      print([0,0,0,0,0,0])
-      return
+      return [0,0,0,0,0,0]
 
     # SECOND MODEL (hate type)
     seq = self.tokenizer_hate_type.texts_to_sequences([text])
@@ -98,4 +97,4 @@ class HateModelInference:
       for i, label in enumerate(labels)
     ]
 
-    print(outputs)
+    return outputs

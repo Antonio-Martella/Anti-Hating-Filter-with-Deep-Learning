@@ -1,4 +1,5 @@
 import re
+import os
 
 def clean(text):
   if not isinstance(text, str):
@@ -17,3 +18,15 @@ def clean(text):
   text = re.sub(r'\s+', ' ', text).strip()
   
   return text
+
+
+def resolve_path(path_str):
+  
+  if os.path.isfile(path_str):
+    return path_str
+    
+  candidate = os.path.join("data", path_str)
+  if os.path.isfile(candidate):
+    return candidate
+    
+  raise FileNotFoundError(f"File not found: {path_str} or {candidate}")
