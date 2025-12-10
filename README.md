@@ -209,4 +209,4 @@ python src/inference/predict_csv.py --input input_file_name.csv --output results
 ```
 Behaviors:
 
-	- --input accepts either a full file path or just a filename. If only a f
+	-
