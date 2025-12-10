@@ -101,25 +101,26 @@ NB: Custom weighted loss (to compensate class imbalance)
 3. **Hierarchical modeling**: The second model is trained only on toxic comments, reducing noise and helping the network specialize on the nuances of toxic subcategories.
 
 
-## Struttura del progetto
+## Project Structure
 
-La struttura del repository è organizzata per separare in modo chiaro i diversi componenti del workflow di Deep Learning:
+The repository structure is organized to clearly separate the different components of the Deep Learning workflow:
+
 ```
 .
-├── data/                      # Dataset per training e inferenza
-├── notebooks/                 # Notebook di analisi esplorativa, esperimenti e prototipazione dei modelli.
+├── data/                      # Dataset for training and inference
+├── notebooks/                 # Exploratory analysis notebook, experiments and model prototyping.
 ├── src/
-│   ├── preprocessing/         # Script per cleaning, tokenizzazione e preparazione testo
-│   ├── models/                # Definizione delle architetture (binaria e multilabel)
-│   ├── training/              # Script di training e tuning dell'hyperparameters
-│   ├── inference/             # Script per la predizione su nuovi commenti
-│   └── utils/                 # Funzioni di supporto (metriche, callback, salvataggio/ caricamento modelli)
-├── models/                    # Modelli salvati (pesi, tokenizer, best threshold, parametri)
-├── results/                   # Metriche, curve di training, confusion matrix, report
-├── requirements.txt           # Dipendenze per Windows/Linux/macOS Intel
-├── requirements_macos_arm.txt # Dipendenze per macOS ARM (M1/M2/M3)
-├── README.md                  # Documentazione del progetto
-└── LICENSE                    # Licenza
+│   ├── evaluation/            # Script for model evaluation
+│   ├── models/                # Architecture definition (binary and multilabel)
+│   ├── training/              # Hyperparameter tuning and model training script
+│   ├── inference/             # # Script for predicting new comments (single sentences or .csv files)
+│   └── utils/                 # Support functions (metrics, tokenization, cleaning, splitting, etc.)
+├── models/                    # Trained model files, .json of best hyperparameters, best thresholds, tokenizer
+├── results/                   # Metrics, confusion matrix, reports, output .csv files
+├── requirements.txt           # Dependencies for Windows/Linux/macOS Intel
+├── requirements_macos_arm.txt # Dependencies for macOS ARM (M1/M2/M3)
+├── README.md                  # Detailed description of the repository structure
+└── LICENSE                    # License
 
 ```
 
