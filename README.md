@@ -168,7 +168,7 @@ Hate type model
 python src/training/hate_type/optuna_search_ht.py
 ```
 
-**Training models with the best hyperparameters**
+**Training models with the best hyperparameters** 
 Binary hate model
 ```bash
 python src/training/binary_hate/train_binary_hate_model.py
