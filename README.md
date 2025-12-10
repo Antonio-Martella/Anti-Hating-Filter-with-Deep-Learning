@@ -1,4 +1,4 @@
-rning Project – Toxic Comment Classification
+# Deep Learning Project – Toxic Comment Classification
 
 ## Overview
 This project was born with the aim of developing an automatic classification system for toxic comments using Deep Learning techniques applied to Natural Language Processing (NLP).
