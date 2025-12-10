@@ -193,3 +193,6 @@ Both scripts use the same two-stage pipeline (binary detection + multilabel clas
 
 1. **Inference on a single comment**  
 	Useful for quick testing or for embedding a prediction step inside another application.
+	```bash
+	python src/inference/predict_text.py
+	```
