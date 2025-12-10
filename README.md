@@ -151,24 +151,20 @@ pip install -r requirements_macos_arm.txt
 
 ## Usage
 
-###  Training e Tuning da zero
-Se vuoi ottimizzare gli iperparametri e allenare i modelli da zero:
+### Training and Tuning from Scratch
+If you want to optimize hyperparameters and train models from scratch:
 
 **Tuning degli iperparametri**
 ```bash
-# Modello binary_hate
 python src/training/binary_hate/optuna_search_bh.py
 
-# Modello hate_type
 python src/training/hate_type/optuna_search_ht.py
 ```
 
-**Training dei modelli con i best hyperparameters**
+**Training models with the best hyperparameters**
 ```bash
-# Modello binary_hate
 python src/training/binary_hate/train_binary_hate_model.py
 
-# Modello hate_type
 python src/training/hate_type/train_hate_type_model.py
 ```
 
