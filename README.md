@@ -208,5 +208,4 @@ The CSV must contain a single column with raw text comments (no headers required
 python src/inference/predict_csv.py --input input_file_name.csv --output results/output_file_name_pred.csv
 ```
 Behaviors:
-
 	-
