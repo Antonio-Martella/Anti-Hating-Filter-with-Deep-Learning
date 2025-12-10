@@ -212,4 +212,18 @@ Behaviors:
 - --output if not provided, the script automatically saves the output to:
 	```php-template
 	results/<input_filename>_pred.csv
-	```	
+	```
+
+Output file structure: The generated CSV contains
+
+- the original comment
+
+- six binary labels: toxic, severe_toxic, obscene, threat, insult, identity_hate
+
+Example:
+```bash 
+comment,toxic,severe_toxic,obscene,threat,insult,identity_hate
+"You suck",1,0,1,0,1,0
+"This is fantastic",0,0,0,0,0,0
+...
+```
