@@ -58,9 +58,9 @@ The design of both models was driven by the characteristics of the task, the lin
 
 ### Binary Classification Model
 
-Goal: detect whether a comment contains any toxic content.
+**Goal**: detect whether a comment contains any toxic content.
 
-Architecture:
+**Architecture**:
 
 - Embedding layer 
 
@@ -70,7 +70,20 @@ Architecture:
 
 - Dense classifiers
 
+Reasons for this design:
 
+1. **Sequential dependencies matter**
+	Toxic expressions often depend on the interplay of words and their local context.
+	The Bidirectional LSTM captures long-range dependencies in both directions.
+
+Attention improves interpretability and focus
+Attention allows the model to weight the most relevant words (insults, threats, expressions of hate), improving sensitivity to subtle toxic cues.
+
+Efficiency and robustness
+A single-layer BiLSTM with attention provides an optimal balance between expressive power and low inference cost, suitable for real-time toxicity detection.
+
+Reduction of false negatives
+The architecture and training setup are optimized to avoid missing toxic messages, which is the priority in safety-sensitive classification tasks.
 
 ## Struttura del progetto
 
