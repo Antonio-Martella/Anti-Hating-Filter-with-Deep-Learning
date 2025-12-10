@@ -159,16 +159,22 @@ The simplest option is Google Colab, which is the environment used during develo
 If you want to reproduce the full workflow from scratch, including hyperparameter optimization and training (all seeds are fixed to ensure reproducibility), you can simply run:
 
 **Tuning degli iperparametri**
+Binary hate model
 ```bash
 python src/training/binary_hate/optuna_search_bh.py
-
+```
+Hate type model
+```bash
 python src/training/hate_type/optuna_search_ht.py
 ```
 
 **Training models with the best hyperparameters**
+Binary hate model
 ```bash
 python src/training/binary_hate/train_binary_hate_model.py
-
+```
+Hate type model
+```bash
 python src/training/hate_type/train_hate_type_model.py
 ```
 
