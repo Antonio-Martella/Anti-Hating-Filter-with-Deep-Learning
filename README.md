@@ -191,5 +191,5 @@ Once the models are trained (or downloaded), you can run inference either on a s
 
 Both scripts use the same two-stage pipeline (binary detection + multilabel classification).
 
-1. **Inference on a single comment**
+1. **Inference on a single comment**  
 	Useful for quick testing or for embedding a prediction step inside another application.
