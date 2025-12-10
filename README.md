@@ -196,3 +196,6 @@ Both scripts use the same two-stage pipeline (binary detection + multilabel clas
 	```bash
 	python src/inference/predict_text.py
 	```
+	Type a sentence and press Enter to get a prediction. 
+	Type exit to quit.  
+	The model prints the result directly in the terminal, showing the binary toxicity prediction (hate / not hate) and, when applicable, the six multilabel toxicity categories.
