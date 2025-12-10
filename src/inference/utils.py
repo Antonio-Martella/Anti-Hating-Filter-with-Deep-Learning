@@ -1,18 +1,19 @@
-from tensorflow.keras.models import load_model
-from models import weighted_binary_crossentropy, AttentionLayer
+import re
 
-
-class HateModelInference:
-    def __init__(self):
-        self.model_binary = model_binary_hate = load_model(
-          'models/binary_hate/model_hate_binary.h5',
-          custom_objects={"AttentionLayer": AttentionLayer},
-    compile=False
-  )
-        self.model_hate_type = load_model(...)
-        self.tokenizer_binary = ...
-        self.tokenizer_hate_type = ...
-        self.thresholds = ...
-
-    def predict_text(self, text):
-        # return dict con: prob, binary_label, multilabels
+def clean(text):
+  if not isinstance(text, str):
+    return ""
+  # Lowercase
+  text = text.lower()
+  # Remove URLs
+  text = re.sub(r'http\S+|www\S+|https\S+', '', text)
+  # Remove HTML tags
+  text = re.sub(r'<.*?>', '', text)
+  # Remove mentions (@username)
+  text = re.sub(r'@\w+', '', text)
+  # Remove weird symbols but keep punctuation like ! ? . ,
+  text = re.sub(r"[^a-zA-Z0-9.,!?\'\"\s]", " ", text)
+  # Replace multiple spaces
+  text = re.sub(r'\s+', ' ', text).strip()
+  
+  return text
