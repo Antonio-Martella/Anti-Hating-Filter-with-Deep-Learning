@@ -92,6 +92,13 @@ Reasons for this design:
 
 NB: Custom weighted loss (to compensate class imbalance)
 
+**Reasons for this design**:
+
+1. **Multilabel nature of the task**: A comment may contain multiple forms of toxicity simultaneously (e.g., insult + obscene + threat). Using sigmoid outputs instead of softmax allows independent probabilities per class.
+
+2. **Class imbalance handling**: The dataset contains rare classes (e.g., threat or severe_toxic). A custom weighted binary cross-entropy ensures that rare classes contribute more to the gradient, improving recall.
+
+3. **Hierarchical modeling**: The second model is trained only on toxic comments, reducing noise and helping the network specialize on the nuances of toxic subcategories.
 
 
 ## Struttura del progetto
