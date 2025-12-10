@@ -186,9 +186,10 @@ If you want to save time and avoid training models from scratch, you can downloa
 - [model_binary_hate.h5](https://drive.google.com/file/d/10c-YEeP1nxWQeWUiqdfj0MH9DumaghUV/view?usp=drive_link) → place it in `models/binary_hate/`
 - [model_hate_type.h5](https://drive.google.com/file/d/1osNGAY8DDs2SiC-a4sH0GtD6e0DBF52M/view?usp=drive_link) → place it in `models/hate_type/`
 
-### Inferenza 
-Per eseguire l'inferenza su un commento di esempio:
-```bash
-python src/inference/predict.py --text "You are an idiot"
+### Inference
+Once the models are trained (or downloaded), you can run inference either on a single input text or on an entire CSV dataset.
 
+Both scripts use the same two-stage pipeline (binary detection + multilabel classification).
 
+1. **Inference on a single comment**
+	Useful for quick testing or for embedding a prediction step inside another application.
