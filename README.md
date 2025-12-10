@@ -125,29 +125,27 @@ The repository structure is organized to clearly separate the different componen
 ```
 
 ## Installation
-Clonare la repository:
+Clone the repository:
 ```bash
 git clone https://github.com/Antonio-Martella/Anti-Hating-Filter-with-Deep-Learning.git
 cd Anti-Hating-Filter-with-Deep-Learning/
 ```
-Creare e attivare l'ambiente virtuale:
+Creating and activating the virtual environment, for Linux/MacOS
 ```bash
-# Linux/MacOS
 python -m venv venv
 source venv/bin/activate
 ```
+for Windows
 ```bash
-# Windows
 python -m venv venv
 venv\Scripts\activate    
 ```
-Installare le dipendenze:
+Install dependencies, for Windows/Linux/MacOS (Intel)
 ```bash
-# Windows/Linux/macOS (Intel/ARM)
 pip install -r requirements.txt
 ```
+for MacOs ARM (Apple Silicon)
 ```bash
-# MacOS ARM (Apple Silicon)
 pip install -r requirements_macos_arm.txt
 ```
 
