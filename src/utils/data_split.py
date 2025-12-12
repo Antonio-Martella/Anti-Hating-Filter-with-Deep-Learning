@@ -6,6 +6,17 @@ from evaluation import plot_class_distribution
 
 def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
 
+  '''
+  Splits a dataframe into training and test sets for a binary classification task.
+
+  - Creates a 'has_hate' column: 1 if 'sum_injurious' > 0, else 0.
+  - Plots class distribution in 'binary_hate' folder.
+  - Splits data into train/test with optional stratification.
+  - Saves train and test CSVs in 'data/train_and_test'.
+  - Optionally applies simple augmentation by repeating rows based on 'sum_injurious'.
+  - Returns the augmented training set and the test set.
+  '''
+
   df = df.copy()
   df['has_hate'] = (df['sum_injurious'] > 0).astype(int)
 
@@ -47,6 +58,11 @@ def split_dataset_binary(df, test_size=0.2, stratify=True, augmentation=False):
 
 
 def split_dataset_hate_type():
+
+  '''
+  Load the hate type train and test datasets, filter for samples with at least one injurious label, 
+  plot the class distribution, and return the filtered DataFrames.
+  '''
 
   path = 'data/train_and_test'
 

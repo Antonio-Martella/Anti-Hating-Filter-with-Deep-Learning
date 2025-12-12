@@ -12,6 +12,26 @@ from src.inference.utils import clean
 
 
 class HateModelInference:
+  
+  '''
+  Initializes the full inference stack for the hate-detection system.
+
+  This constructor loads all assets required at prediction time, including:
+  - The binary hate model and the multi-label hate-type model.
+  - Their tokenizers and preprocessing configurations.
+  - Class-specific optimal thresholds for post-processing.
+  - All associated metadata such as maximum sequence lengths.
+
+  Inputs
+      None. All resource paths are automatically derived from the project root.
+
+  Outputs
+      A fully initialized HateModelInference object equipped with:
+        – Loaded TensorFlow models for both tasks.
+        – Tokenizers for text-to-sequence transformations.
+        – Maximum input lengths used during training.
+        – Threshold dictionaries for converting probabilities into class labels.
+  '''
 
   def __init__(self):
 

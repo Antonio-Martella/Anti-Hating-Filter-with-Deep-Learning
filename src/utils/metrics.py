@@ -1,6 +1,14 @@
 import tensorflow as tf
 
 class F1Score(tf.keras.metrics.Metric):
+
+    '''
+    Custom Keras metric to compute the F1 score during training and evaluation.
+    It internally uses the Precision and Recall metrics, updating their states
+    for each batch. The F1 score is computed as the harmonic mean of precision
+    and recall. Supports resetting states between epochs.
+    '''
+
     def __init__(self, name='f1', **kwargs):
         super(F1Score, self).__init__(name=name, **kwargs)
         self.precision = tf.keras.metrics.Precision()

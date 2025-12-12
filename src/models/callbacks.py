@@ -3,6 +3,15 @@ from tensorflow.keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCh
 
 def callback_binary_hate():
 
+  '''
+  Builds and returns the training callbacks for the binary hate-speech classifier.
+  The function configures three components: 
+  (1) ReduceLROnPlateau, which decreases the learning rate when the validation loss stops improving;
+  (2) EarlyStopping, which halts training once the model no longer progresses and restores the best weights; 
+  (3) ModelCheckpoint, which saves the best-performing model based on validation loss.
+  Outputs a tuple (early_stop, checkpoint, reduce_learning_rate) to be passed directly to model.fit().
+  '''
+
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',
                                            factor = 0.8,
                                            patience = 4,
@@ -25,6 +34,15 @@ def callback_binary_hate():
 # ------------------------------
 
 def callback_hate_type():
+
+  '''
+  Builds and returns the training callbacks for the hate type-speech classifier.
+  The function configures three components: 
+  (1) ReduceLROnPlateau, which decreases the learning rate when the validation loss stops improving;
+  (2) EarlyStopping, which halts training once the model no longer progresses and restores the best weights; 
+  (3) ModelCheckpoint, which saves the best-performing model based on validation loss.
+  Outputs a tuple (early_stop, checkpoint, reduce_learning_rate) to be passed directly to model.fit().
+  '''
 
   reduce_learning_rate = ReduceLROnPlateau(monitor = 'val_loss',   
                                            factor = 0.8,
