@@ -1,22 +1,38 @@
 import os
-import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.metrics import (
-    classification_report,
-    confusion_matrix,
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score
-)
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
-from .f1_threshold_optimization import f1_score_optimization, f1_score_optimization_thresholds
+from .f1_threshold_optimization import f1_score_optimization_thresholds
 from .class_distribution import plot_class_distribution
 
 
 def evaluate_model(model, X_padded, y_true, labels, folder=None):
-   
+
+    '''
+    Evaluates a trained model on padded input data using F1-optimized thresholds.
+    The function computes predictions, applies the optimal threshold for each label
+    (binary or multilabel), calculates standard classification metrics, and returns
+    the results as a pandas DataFrame. If a folder is provided, the metric report is
+    also saved under `results/{folder}`.
+
+    Parameters
+    ----------
+    model : keras.Model
+        Trained model used for prediction.
+    X_padded : array-like
+        Tokenized and padded input sequences.
+    y_true : array-like
+        Ground-truth labels (1D for binary, 2D for multilabel).
+    labels : list of str
+        Names of the labels.
+    folder : str, optional
+        Folder name for saving the evaluation report.
+
+    Returns
+    -------
+    DataFrame
+        Metrics (accuracy, precision, recall, F1) computed per label.
+    '''
+
     y_pred = model.predict(X_padded)
 
     if y_pred.ndim == 2 and y_pred.shape[1] == 1:
