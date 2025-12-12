@@ -1,6 +1,5 @@
 from tensorflow.keras.layers import Embedding, Dense, LSTM, Bidirectional, Dropout, BatchNormalization
 from tensorflow.keras.models import Sequential
-from .attention_layer import AttentionLayer
 
 
 def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics,
@@ -9,8 +8,7 @@ def binary_hate_model(vocabulary_size, max_len, dropout, optimizer, loss, metric
   model = Sequential()
   model.add(Embedding(input_dim = vocabulary_size, output_dim = embedding_dim, input_length = max_len))
 
-  model.add(Bidirectional(LSTM(lstm_units, return_sequences=True, activation='tanh')))
-  model.add(AttentionLayer())
+  model.add(Bidirectional(LSTM(lstm_units, return_sequences=False, activation='tanh')))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
   
@@ -37,8 +35,7 @@ def hate_type_model(vocabulary_size, max_len, dropout, optimizer, loss, metrics,
   model = Sequential()
   model.add(Embedding(input_dim = vocabulary_size, output_dim = embedding_dim, input_length = max_len))
 
-  model.add(Bidirectional(LSTM(lstm_units, return_sequences=True, activation='tanh')))
-  model.add(AttentionLayer())
+  model.add(Bidirectional(LSTM(lstm_units, return_sequences=False, activation='tanh')))
   model.add(BatchNormalization())
   model.add(Dropout(dropout))
 

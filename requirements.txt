@@ -1,15 +1,4 @@
-# This requirements file lists the core dependencies needed to run the project
-# on standard Python environments (Linux, Windows, and non-ARM macOS).
-#
-# The selected packages cover data manipulation, visualization, classical
-# machine learning, deep learning with TensorFlow, hyperparameter optimization,
-# and progress tracking.
-#
-# To create the environment:
-#   python3 -m venv .venv
-#   source .venv/bin/activate   (Linux/macOS)
-#   .venv\Scripts\activate      (Windows)
-#   pip install -r requirements.txt
+# Requires Python 3.10 or 3.11
 
 numpy>=1.26
 pandas>=2.2

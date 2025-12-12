@@ -96,7 +96,6 @@ history_hate_binary = model_hate_binary.fit(padded_train_hate_sequences,
                                             class_weight = class_weights_hate(y_train_binary_hate),
                                             callbacks = [callback_binary_hate(), csv_logger_binary_hate])
 
-# COPY WEIGHTS TO /models (to be added)
 model_hate_binary.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_binary.h5')
 
 evaluate_model(

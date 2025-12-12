@@ -23,17 +23,17 @@ The goal is to build a robust model capable of:
 
 2. Classifying the specific toxicity categories present in the comment (multilabel classification), including:
 
-	- toxic
+	- `toxic`
 
-	- severe_toxic
+	- `severe_toxic`
 
-	- insult
+	- `insult`
 
-	- threat
+	- `threat`
 
-	- identity_hate
+	- `identity_hate`
 
-	- obscene
+	- `obscene`
 
 ## System Architecture
 

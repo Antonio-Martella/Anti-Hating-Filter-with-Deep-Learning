@@ -7,7 +7,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 sys.path.append(ROOT)
 
-from src.models import AttentionLayer, weighted_binary_crossentropy
+from src.models import weighted_binary_crossentropy
 from src.inference.utils import clean
 
 
@@ -25,7 +25,6 @@ class HateModelInference:
     # LOAD BINARY MODEL
     self.model_binary = load_model(
       os.path.join(self.path_binary, "model_hate_binary.h5"),
-      custom_objects={"AttentionLayer": AttentionLayer},
       compile=False
     )
 
@@ -36,7 +35,6 @@ class HateModelInference:
     self.model_hate_type = load_model(
       os.path.join(self.path_hate_type, "model_hate_type.h5"),
       custom_objects={
-        "AttentionLayer": AttentionLayer,
         "weighted_binary_crossentropy": loss_fn
       },
       compile=False
@@ -79,7 +77,7 @@ class HateModelInference:
     # FIRST MODEL (binary hate)
     seq = self.tokenizer_binary.texts_to_sequences([text])
     pad = pad_sequences(seq, maxlen=self.max_len_bh)
-    prob = self.model_binary.predict(pad)[0][0]
+    prob = self.model_binary.predict(pad, verbose = 0)[0][0]
 
     pred = int(prob >= self.thresholds_bh["best_thresholds_has_hate"])
 
@@ -89,7 +87,7 @@ class HateModelInference:
     # SECOND MODEL (hate type)
     seq = self.tokenizer_hate_type.texts_to_sequences([text])
     pad = pad_sequences(seq, maxlen=self.max_len_ht)
-    probs = self.model_hate_type.predict(pad)[0]
+    probs = self.model_hate_type.predict(pad, verbose = 0)[0]
 
     labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
     outputs = [

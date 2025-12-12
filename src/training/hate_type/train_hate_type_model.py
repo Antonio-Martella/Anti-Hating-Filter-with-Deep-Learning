@@ -100,8 +100,6 @@ history_hate_binary = model_hate_type.fit(
    callbacks = [callback_hate_type(), csv_logger_hate_type]
 )
 
-model_hate_type.save('/content/drive/MyDrive/Colab Notebooks/Progetto GitHub/DL GitHub/model_hate_type.h5')
-
 evaluate_model(
   model=model_hate_type, 
   X_padded=padded_test_hate_sequences, 
