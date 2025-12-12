@@ -130,26 +130,30 @@ Clone the repository:
 git clone https://github.com/Antonio-Martella/Anti-Hating-Filter-with-Deep-Learning.git
 cd Anti-Hating-Filter-with-Deep-Learning/
 ```
-Please note that this repository requires *Python 3.10 or 3.11*. 
+Please note that this repository requires Python 3.11 (or 3.10). 
 
-Creating and activating the virtual environment, for Linux/MacOS
+To set up the virtual environment and install dependencies, simply run the installation script:
 ```bash
-python -m venv venv
-source venv/bin/activate
+chmod +x setup_env.sh
+./setup_env.sh
 ```
-for Windows
-```bash
-python -m venv venv
-venv\Scripts\activate    
-```
-Install dependencies, for Windows/Linux/MacOS (Intel)
-```bash
-pip install -r requirements.txt
-```
-for MacOs ARM (Apple Silicon)
-```bash
-pip install -r requirements_macos_arm.txt
-```
+The script will automatically:
+- Detect your OS (Linux, macOS Intel, macOS ARM).
+- Select the correct requirements file (`requirements.txt` or `requirements_macos_arm.txt`)
+- Create a virtual environment (using `pyenv-virtualenv` if available, otherwise a standard venv).
+- Install all dependencies.
+
+Activating the environment:
+- If the script used `pyenv-virtualenv`:
+	```bash
+	pyenv activate myproject-env
+	```
+- If it used a standard venv:
+	```bash
+	source myproject-env/bin/activate
+	```
+After this, you are ready to run the project.
+
 
 ## Usage
 
