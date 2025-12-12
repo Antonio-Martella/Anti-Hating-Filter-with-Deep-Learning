@@ -1,4 +1,5 @@
-etup_env.sh
+#!/bin/bash
+# setup_env.sh
 # Script to setup Python 3.11.8 environment with pyenv and install dependencies
 
 # Exit on any error
