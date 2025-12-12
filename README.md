@@ -130,6 +130,8 @@ Clone the repository:
 git clone https://github.com/Antonio-Martella/Anti-Hating-Filter-with-Deep-Learning.git
 cd Anti-Hating-Filter-with-Deep-Learning/
 ```
+Please note that this repository requires *Python 3.10 or 3.11*. 
+
 Creating and activating the virtual environment, for Linux/MacOS
 ```bash
 python -m venv venv
