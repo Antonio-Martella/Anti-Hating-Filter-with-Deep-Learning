@@ -235,9 +235,19 @@ comment,toxic,severe_toxic,obscene,threat,insult,identity_hate
 ```
 
 ## Metrics
-### Binary hate Model
+### Binary Hate Model
 
 | Classe    | Accuracy | Precision | Recall | F1     |
 |-----------|---------|-----------|--------|--------|
 | has_hate  | 0.9573  | 0.8236    | 0.7381 | 0.7785 |
+
+### Hate Type Model
+| Classe        | Accuracy | Precision | Recall  | F1     |
+|---------------|---------|-----------|--------|--------|
+| toxic         | 0.9396  | 0.9396    | 1.0000 | 0.9689 |
+| severe_toxic  | 0.8277  | 0.3082    | 0.5176 | 0.3864 |
+| obscene       | 0.7020  | 0.6959    | 0.7787 | 0.7350 |
+| threat        | 0.9695  | 0.4396    | 0.4545 | 0.4469 |
+| insult        | 0.5541  | 0.5247    | 0.9013 | 0.6633 |
+| identity_hate | 0.8854  | 0.3559    | 0.4667 | 0.4038 |
 
