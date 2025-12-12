@@ -146,11 +146,11 @@ The script will automatically:
 Activating the environment:
 - If the script used `pyenv-virtualenv`:
 	```bash
-	pyenv activate myproject-env
+	pyenv activate venv
 	```
 - If it used a standard venv:
 	```bash
-	source myproject-env/bin/activate
+	source venv/bin/activate
 	```
 After this, you are ready to run the project.
 
