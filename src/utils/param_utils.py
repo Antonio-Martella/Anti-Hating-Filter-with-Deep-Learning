@@ -3,6 +3,19 @@ import json
 
 def save_param(path, key, value):
 
+    '''
+    Save a parameter to a JSON file.
+
+    If the file exists, it loads the current parameters, updates or adds
+    the given key-value pair, and saves the updated dictionary back to the file.
+    If the file does not exist, it creates a new JSON file containing the key-value pair.
+
+    Parameters:
+        path (str): Path to the JSON file where parameters are stored.
+        key (str): The parameter name to save or update.
+        value: The value to associate with the key.
+    '''
+
     if os.path.exists(path):
         with open(path, "r") as f:
             params = json.load(f)
