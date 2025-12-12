@@ -235,3 +235,9 @@ comment,toxic,severe_toxic,obscene,threat,insult,identity_hate
 ```
 
 ## Metrics
+### Binary hate Model
+
+| Classe    | Accuracy | Precision | Recall | F1     |
+|-----------|---------|-----------|--------|--------|
+| has_hate  | 0.9573  | 0.8236    | 0.7381 | 0.7785 |
+
